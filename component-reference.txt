@@ -1,0 +1,270 @@
+================================================================================
+COMPONENT REFERENCE - Fundamental AWS (Astro + MDX)
+================================================================================
+
+Ground truth seluruh komponen yang boleh di-import dari "@components" di dalam
+modul .mdx. Lampirkan file ini ke Project ChatGPT bersama ai-instructions.md
+supaya model menulis import, prop, dan slot PERSIS sesuai sumber (anti-halusinasi).
+
+Aturan singkat yang paling sering salah:
+- Import HANYA dari "@components": Section, Box, Steps, Step, Recap, CardGrid,
+  Card, Figure, Chip, Hero, Compare. Tidak ada komponen lain. Jangan mengarang.
+- Hero: judul lewat prop `title` (HTML, set:html). JANGAN tulis <h1> di MDX.
+- Chip: HANYA di slot meta Hero; `icon` dari 8 nama sah saja (lihat Chip.astro).
+- Box: 4 varian sah (tip|analogy|warn|exam); `label` boleh HTML; `icon` emoji.
+- Section: `title`/`sub` boleh HTML; <h2> milik Section (sub-judul pakai <h3>/<h4>).
+- Figure: bungkus komponen SVG; caption opsional lewat slot name="caption".
+- Tiap blok/komponen berteks ditulis SATU baris (lihat ai-instructions.md).
+
+--------------------------------------------------------------------------------
+FILE: src/components/index.ts   (barrel — nama import resmi dari "@components")
+--------------------------------------------------------------------------------
+// Satu titik import untuk MDX:  import { Box, Steps, ... } from '@components';
+export { default as Section } from './Section.astro';
+export { default as Box } from './Box.astro';
+export { default as Steps } from './Steps.astro';
+export { default as Step } from './Step.astro';
+export { default as Recap } from './Recap.astro';
+export { default as CardGrid } from './CardGrid.astro';
+export { default as Card } from './Card.astro';
+export { default as Figure } from './Figure.astro';
+export { default as Chip } from './Chip.astro';
+export { default as Hero } from './Hero.astro';
+export { default as Compare } from './Compare.astro';
+
+--------------------------------------------------------------------------------
+FILE: src/components/Hero.astro   (sekali per modul, di atas; judul = <h1>)
+--------------------------------------------------------------------------------
+---
+// Hero modul. eyebrow di atas, judul (h1), lalu slot (lede), lalu slot "meta" (chips).
+// PENTING: `title` di-render di .astro via set:html — JANGAN tulis <h1> multi-baris di
+// dalam MDX, karena parser MDX akan membungkus isinya ke <p> (judul jadi mengecil 19px).
+interface Props {
+  eyebrow?: string;
+  title?: string; // HTML judul, mis. 'Amazon <em>EC2</em><br />Elastic Compute Cloud'
+}
+const { eyebrow, title } = Astro.props;
+---
+<div class="hero">
+  {eyebrow && <div class="eyebrow" set:html={eyebrow} />}
+  {title && <h1 set:html={title} />}
+  <slot />
+  <div class="hero-meta">
+    <slot name="meta" />
+  </div>
+</div>
+
+PEMAKAIAN (MDX):
+<Hero eyebrow="Modul &middot; Storage" title="Amazon <em>S3</em><br />Simple Storage Service">
+  <p>Satu kalimat pembuka dalam satu baris.</p>
+  <Fragment slot="meta">
+    <Chip icon="target">Target: <b>CLF-C02</b></Chip>
+    <Chip icon="clock">~60 menit baca</Chip>
+  </Fragment>
+</Hero>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Section.astro   (ulang sebanyak entri toc; bawa <h2>)
+--------------------------------------------------------------------------------
+---
+// Satu section modul: nomor + judul + subjudul opsional, lalu konten.
+// Markup identik dengan globals.css (.sec-head / .sec-num / .sec-sub).
+interface Props {
+  num: string;
+  id: string;
+  title: string;
+  sub?: string;
+}
+const { num, id, title, sub } = Astro.props;
+---
+<section id={id}>
+  <div class="sec-head">
+    <div class="sec-num">{num}</div>
+    <h2 set:html={title} />
+  </div>
+  {sub && <p class="sec-sub" set:html={sub} />}
+  <slot />
+</section>
+
+PEMAKAIAN (MDX) — beri baris kosong di dalam Section agar Markdown ter-render:
+<Section num="01" id="intro" title="Apa itu S3?" sub="subjudul opsional">
+
+<p class="lead">Paragraf pembuka.</p>
+
+Paragraf Markdown biasa. **Tebal**, `kode`, [tautan](https://aws.amazon.com).
+
+</Section>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Box.astro   (callout; 4 varian sah: tip|analogy|warn|exam)
+--------------------------------------------------------------------------------
+---
+// Callout box. variant: tip | analogy | warn | exam (atau lainnya yang ada di globals.css).
+// icon opsional dirender sebagai chip .b-icon (gaya EC2); tanpa icon, label tampil polos (gaya IAM).
+interface Props {
+  variant: string;
+  label: string;
+  icon?: string;
+}
+const { variant, label, icon } = Astro.props;
+---
+<div class={`box ${variant}`}>
+  <div class="box-tag">{icon && <span class="b-icon">{icon}</span>}<span set:html={label} /></div>
+  <slot />
+</div>
+
+PEMAKAIAN (MDX) — variant HANYA tip (biru) | analogy (teal) | warn (merah) | exam (ungu):
+<Box variant="tip" icon="💡" label="Judul"><p>Isi callout satu baris.</p></Box>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Chip.astro   (HANYA di slot meta Hero; ikon dari 8 nama sah)
+--------------------------------------------------------------------------------
+---
+// Chip kecil (dipakai di hero-meta). Ikon Tabler opsional via prop `icon`.
+import Icon from './Icon.astro';
+interface Props {
+  icon?:
+    | 'clock' | 'target' | 'world' | 'ban' | 'gift'
+    | 'book' | 'sun' | 'moon';
+}
+const { icon } = Astro.props;
+---
+<span class="chip">{icon && <Icon name={icon} size={15} class="chip-ic" />}<slot /></span>
+
+PEMAKAIAN (MDX) — icon WAJIB dari daftar: clock, target, world, ban, gift, book, sun, moon:
+<Chip icon="clock">~60 menit baca</Chip>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Steps.astro   (pembungkus; nomor otomatis via CSS)
+--------------------------------------------------------------------------------
+---
+// Daftar langkah bernomor. Nomor otomatis via CSS (.sn) di globals.css.
+---
+<div class="steps">
+  <slot />
+</div>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Step.astro   (satu langkah di dalam <Steps>)
+--------------------------------------------------------------------------------
+---
+// Satu langkah. Isi slot biasanya: <b>Judul</b><p>Penjelasan</p>
+---
+<div class="step">
+  <div class="sn"></div>
+  <div class="st"><slot /></div>
+</div>
+
+PEMAKAIAN (MDX):
+<Steps>
+  <Step><b>Buat bucket</b><p>Beri nama unik global.</p></Step>
+  <Step><b>Unggah objek</b><p>Tarik berkas ke bucket.</p></Step>
+</Steps>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Recap.astro   (kotak ringkasan; isi <ul><li>)
+--------------------------------------------------------------------------------
+---
+// Kotak ringkasan poin. Isi slot: <ul><li>...</li></ul>
+interface Props {
+  title?: string;
+}
+const { title = 'Poin Penting' } = Astro.props;
+---
+<div class="recap">
+  <h4 set:html={title} />
+  <slot />
+</div>
+
+PEMAKAIAN (MDX):
+<Recap title="Poin Penting"><ul><li>Poin satu.</li><li>Poin dua.</li></ul></Recap>
+
+--------------------------------------------------------------------------------
+FILE: src/components/CardGrid.astro   (grid; cols 2 | 3)
+--------------------------------------------------------------------------------
+---
+// Grid kartu. cols: 2 | 3 (lihat .grid-2 / .grid-3 di globals.css).
+interface Props {
+  cols?: 2 | 3;
+}
+const { cols = 2 } = Astro.props;
+---
+<div class={`grid grid-${cols}`}>
+  <slot />
+</div>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Card.astro   (kartu di dalam <CardGrid>)
+--------------------------------------------------------------------------------
+---
+// Kartu fleksibel. Isi slot: <h4>...</h4><p>...</p> (judul boleh berisi emoji atau <span class="ci"><svg/></span>).
+---
+<div class="card">
+  <slot />
+</div>
+
+PEMAKAIAN (MDX):
+<CardGrid cols={2}>
+  <Card><h4>Durabilitas</h4><p>11 sembilan (99,999999999%).</p></Card>
+  <Card><h4>Ketersediaan</h4><p>SLA bergantung kelas penyimpanan.</p></Card>
+</CardGrid>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Figure.astro   (pembungkus diagram SVG; caption opsional)
+--------------------------------------------------------------------------------
+---
+// Pembungkus figure: slot utama untuk komponen SVG, slot "caption" opsional.
+const hasCaption = Astro.slots.has('caption');
+---
+<figure>
+  <slot />
+  {hasCaption && (
+    <figcaption><slot name="caption" /></figcaption>
+  )}
+</figure>
+
+PEMAKAIAN (MDX) — komponen SVG di-import dari "@figures/<Nama>.astro":
+<Figure><S3Fig01 /><Fragment slot="caption"><b>Gambar 1.</b> Penjelasan singkat.</Fragment></Figure>
+
+--------------------------------------------------------------------------------
+FILE: src/components/Compare.astro   (dua sisi yang sering tertukar; isi via slot a/b)
+--------------------------------------------------------------------------------
+---
+// Perbandingan dua sisi yang sering tertukar (mis. CapEx vs OpEx, Scalability vs
+// Elasticity, security OF vs IN the cloud). Dua panel berdampingan dengan badge "vs"
+// di tengah. Isi tiap sisi lewat slot "a" dan "b"; label & nada warna lewat prop.
+// Gaya .compare/.cmp-* ada di globals.css (area REVAMP 2026), reaktif tema.
+interface Props {
+  aLabel: string;                                  // judul panel kiri (boleh HTML)
+  bLabel: string;                                  // judul panel kanan (boleh HTML)
+  aTone?: 'muted' | 'blue' | 'teal' | 'red' | 'violet';  // warna garis-atas kiri (default muted)
+  bTone?: 'muted' | 'blue' | 'teal' | 'red' | 'violet';  // warna garis-atas kanan (default blue)
+  vs?: string;                                     // teks badge tengah (default "vs")
+}
+const { aLabel, bLabel, aTone = 'muted', bTone = 'blue', vs = 'vs' } = Astro.props;
+---
+<div class="compare">
+  <div class={`cmp-side cmp-${aTone}`}>
+    <div class="cmp-label" set:html={aLabel} />
+    <div class="cmp-body"><slot name="a" /></div>
+  </div>
+  <div class="cmp-vs" aria-hidden="true">{vs}</div>
+  <div class={`cmp-side cmp-${bTone}`}>
+    <div class="cmp-label" set:html={bLabel} />
+    <div class="cmp-body"><slot name="b" /></div>
+  </div>
+</div>
+
+PEMAKAIAN (MDX) — isi slot "a"/"b" dengan <p> atau <ul><li>; tone dari 5 nama sah:
+<Compare aLabel="CapEx" bLabel="OpEx" aTone="muted" bTone="blue">
+  <Fragment slot="a"><ul><li>Modal besar di awal.</li></ul></Fragment>
+  <Fragment slot="b"><ul><li>Bayar sesuai pemakaian.</li></ul></Fragment>
+</Compare>
+
+================================================================================
+CATATAN
+- Icon.astro & Navbar.astro TIDAK di-import di MDX (Chip sudah memuat ikon sah-nya
+  sendiri; Navbar adalah chrome situs). Tidak perlu dilampirkan untuk menulis modul.
+- Gaya/komponen baru ditaruh di src/styles/globals.css (area "REVAMP 2026"),
+  bukan utility Tailwind mentah di MDX. Lihat ai-instructions.md.
+================================================================================

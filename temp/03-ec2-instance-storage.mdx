@@ -1,0 +1,480 @@
+---
+title: "Modul Penyimpanan EC2: Fundamental AWS untuk Pemula"
+badge: "EC2"
+topTitle: "Penyimpanan EC2"
+topSub: "Fundamental AWS untuk Pemula"
+summary: "Pahami EBS, Snapshot, AMI, Instance Store, EFS, dan FSx untuk penyimpanan instance EC2."
+order: 3
+target: "CLF-C02 → SAA-C03"
+readingTime: "~60 menit baca"
+summaryHref: "#ringkasan"
+toc:
+  - { num: "01", id: "intro", title: "Pengantar Penyimpanan EC2" }
+  - { num: "02", id: "ebs", title: "Amazon EBS" }
+  - { num: "03", id: "ebs-snapshots", title: "EBS Snapshots" }
+  - { num: "04", id: "ami", title: "Amazon Machine Image (AMI)" }
+  - { num: "05", id: "image-builder", title: "EC2 Image Builder" }
+  - { num: "06", id: "instance-store", title: "EC2 Instance Store" }
+  - { num: "07", id: "efs", title: "Amazon EFS" }
+  - { num: "08", id: "fsx", title: "Amazon FSx" }
+  - {
+      num: "09",
+      id: "shared-responsibility",
+      title: "Shared Responsibility Model",
+    }
+  - { num: "10", id: "ringkasan", title: "Ringkasan & Tips Ujian" }
+footerTitle: "Modul Penyimpanan EC2: Fundamental AWS untuk Pemula"
+footerSub: "Disusun untuk persiapan CLF-C02 → SAA-C03"
+---
+
+import {
+  Section,
+  Box,
+  Steps,
+  Step,
+  Recap,
+  CardGrid,
+  Card,
+  Chip,
+  Hero,
+  Figure,
+} from "@components";
+import StorageFig01 from "@figures/StorageFig01.astro";
+import StorageFig02 from "@figures/StorageFig02.astro";
+import StorageFig03 from "@figures/StorageFig03.astro";
+import StorageFig04 from "@figures/StorageFig04.astro";
+
+<Hero
+  eyebrow="Modul &middot; Compute Storage"
+  title="Penyimpanan <em>EC2</em><br />EBS, Snapshot, AMI, EFS &amp; FSx"
+>
+  <p>
+    Kenali pilihan penyimpanan untuk instance EC2, dari disk jaringan EBS sampai
+    file system bersama EFS dan FSx.
+  </p>
+  <Fragment slot="meta">
+    <Chip icon="target">
+      Target: <b>CLF-C02</b> &rarr; SAA-C03
+    </Chip>
+    <Chip icon="clock">~60 menit baca</Chip>
+  </Fragment>
+</Hero>
+
+<Section num="01" id="intro" title="Pengantar Penyimpanan EC2" sub="Memilih tempat menyimpan data untuk instance">
+
+<p class="lead">
+  Instance EC2 ibarat sebuah komputer di awan. Sama seperti komputer biasa, ia
+  butuh tempat menyimpan data, dan AWS menyediakan beberapa pilihan dengan
+  karakter yang berbeda-beda.
+</p>
+
+Secara garis besar ada dua keluarga penyimpanan. Pertama, penyimpanan blok (block storage) seperti **EBS** dan **Instance Store**, yang berperilaku seperti hard disk yang dipasang ke satu instance. Kedua, penyimpanan file (file storage) seperti **EFS** dan **FSx**, yang bisa diakses banyak instance sekaligus.
+
+Selain itu ada dua pendukung penting: **AMI** untuk membuat cetakan instance siap pakai, dan **Snapshot** untuk mencadangkan volume EBS. Modul ini membahas semuanya satu per satu.
+
+<Box variant="analogy" icon="🧰" label="Analogi sederhana">
+  <p>
+    Bayangkan EC2 sebagai laptop. EBS adalah SSD internalnya, Instance Store
+    adalah disk super cepat yang isinya hilang saat dimatikan, sedangkan EFS dan
+    FSx adalah hard disk jaringan kantor yang dipakai bersama banyak laptop.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="02" id="ebs" title="Amazon EBS (Elastic Block Store)" sub="Disk jaringan yang bisa dipasang ke instance">
+
+<p class="lead">
+  EBS adalah volume penyimpanan jaringan yang bisa kamu pasang ke instance EC2
+  selama instance berjalan. Karena terhubung lewat jaringan, datanya tetap ada
+  walau instance dimatikan atau dihapus.
+</p>
+
+<Box variant="analogy" icon="🔌" label="Analogi">
+  <p>
+    Anggap EBS seperti flashdisk jaringan. Kamu bisa mencabutnya dari satu
+    instance lalu menancapkannya ke instance lain, dan isinya tetap utuh.
+  </p>
+</Box>
+
+Beberapa karakter penting EBS yang wajib kamu ingat:
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Terikat satu AZ</h4>
+    <p>
+      Sebuah volume EBS hanya hidup di satu Availability Zone. Untuk
+      memindahkannya ke AZ lain, kamu perlu membuat snapshot dulu.
+    </p>
+  </Card>
+  <Card>
+    <h4>Kapasitas dipesan</h4>
+    <p>
+      Kamu menentukan ukuran (GB) dan kadang IOPS di awal, dan tagihan dihitung
+      dari kapasitas yang dipesan, bukan yang terpakai.
+    </p>
+  </Card>
+  <Card>
+    <h4>Bisa dilepas-pasang</h4>
+    <p>
+      Volume bisa di-detach dari satu instance dan di-attach ke instance lain di
+      AZ yang sama.
+    </p>
+  </Card>
+  <Card>
+    <h4>Delete on Termination</h4>
+    <p>
+      Secara default, volume root ikut terhapus saat instance dihapus, sedangkan
+      volume tambahan tidak. Atribut ini bisa diubah.
+    </p>
+  </Card>
+</CardGrid>
+
+<Figure>
+  <StorageFig01 />
+  <Fragment slot="caption">
+    <b>Gambar 1.</b> EBS terikat pada satu Availability Zone, jadi tidak bisa
+    langsung dipasang ke instance di AZ lain.
+  </Fragment>
+</Figure>
+
+<h3>EBS Multi-Attach</h3>
+
+Pada tipe volume tertentu (io1 dan io2), satu volume EBS bisa dipasang ke beberapa instance sekaligus (hingga 16 instance) selama berada di AZ yang sama. Fitur ini dipakai untuk aplikasi khusus yang mampu mengelola penulisan bersamaan.
+
+<Box variant="exam" icon="🎓" label="Sorotan Ujian">
+  <p>
+    Ingat tiga hal: EBS terikat satu AZ, ditagih dari kapasitas yang dipesan,
+    dan volume root default-nya Delete on Termination. Multi-Attach hanya untuk
+    io1 dan io2 di AZ yang sama.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="03" id="ebs-snapshots" title="EBS Snapshots" sub="Mencadangkan volume ke titik waktu tertentu">
+
+<p class="lead">
+  Snapshot adalah salinan cadangan volume EBS pada satu titik waktu. Snapshot
+  disimpan di level Region, sehingga bisa dipakai untuk memindahkan data
+  antar-AZ atau bahkan antar-Region.
+</p>
+
+Kamu tidak wajib melepas volume sebelum membuat snapshot, tetapi melepasnya lebih dulu disarankan agar data benar-benar konsisten. Setelah ada snapshot, kamu bisa membuat volume baru darinya di AZ mana pun.
+
+<Figure>
+  <StorageFig02 />
+  <Fragment slot="caption">
+    <b>Gambar 2.</b> Lewat snapshot, data EBS dari AZ A bisa dipulihkan menjadi
+    volume baru di AZ B.
+  </Fragment>
+</Figure>
+
+<h3>Fitur tambahan yang perlu dikenali</h3>
+
+<CardGrid cols={3}>
+  <Card>
+    <h4>Snapshot Archive</h4>
+    <p>
+      Tingkat penyimpanan yang jauh lebih murah untuk snapshot jarang dipakai,
+      tetapi pemulihannya butuh waktu 24 sampai 72 jam.
+    </p>
+  </Card>
+  <Card>
+    <h4>Recycle Bin</h4>
+    <p>
+      Aturan retensi yang menyelamatkan snapshot terhapus selama jangka waktu
+      tertentu, sehingga bisa dipulihkan jika terhapus tidak sengaja.
+    </p>
+  </Card>
+  <Card>
+    <h4>Fast Snapshot Restore</h4>
+    <p>
+      Membuat volume hasil pemulihan langsung kencang sejak pemakaian pertama,
+      dengan biaya tambahan.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="exam" icon="🎓" label="Sorotan Ujian">
+  <p>
+    Snapshot bisa disalin antar-Region untuk pemulihan bencana atau migrasi.
+    Untuk memindahkan EBS ke AZ lain, jalurnya selalu lewat snapshot.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="04" id="ami" title="Amazon Machine Image (AMI)" sub="Cetakan instance yang siap pakai">
+
+<p class="lead">
+  AMI adalah hasil kustomisasi sebuah instance EC2 yang dikemas menjadi sebuah
+  cetakan. Dari AMI ini kamu bisa meluncurkan banyak instance baru yang sudah
+  berisi OS, software, dan konfigurasi yang sama.
+</p>
+
+<Box variant="analogy" icon="📸" label="Analogi">
+  <p>
+    AMI seperti foto sebuah komputer yang sudah rapi terpasang semua
+    aplikasinya. Begitu kamu butuh komputer serupa, tinggal cetak ulang dari
+    foto itu tanpa pasang ulang dari nol.
+  </p>
+</Box>
+
+Keuntungan utamanya adalah instance baru jadi lebih cepat siap karena software sudah terpaket di dalam AMI. Kamu bisa memakai AMI publik dari AWS, AMI buatan sendiri, atau AMI dari AWS Marketplace.
+
+<h3>Proses membuat AMI</h3>
+
+<Steps>
+  <Step>
+    <b>Luncurkan instance</b>
+    <p>Mulai dari AMI dasar, lalu jalankan instance EC2 seperti biasa.</p>
+  </Step>
+  <Step>
+    <b>Kustomisasi</b>
+    <p>
+      Pasang software dan konfigurasi yang dibutuhkan, lalu uji sampai semuanya
+      berjalan.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat AMI</b>
+    <p>
+      Hentikan instance agar data konsisten, lalu buat AMI. Proses ini otomatis
+      membuat snapshot EBS terkait.
+    </p>
+  </Step>
+  <Step>
+    <b>Luncurkan instance baru</b>
+    <p>
+      Pakai AMI tersebut untuk meluncurkan satu atau banyak instance yang sudah
+      siap pakai.
+    </p>
+  </Step>
+</Steps>
+
+<Figure>
+  <StorageFig03 />
+  <Fragment slot="caption">
+    <b>Gambar 3.</b> Alur membuat AMI, dari kustomisasi instance sampai
+    meluncurkan instance baru.
+  </Fragment>
+</Figure>
+
+<Box variant="exam" icon="🎓" label="Sorotan Ujian">
+  <p>
+    AMI dibuat untuk satu Region tertentu, tetapi bisa disalin ke Region lain.
+    Membuat AMI akan menghasilkan snapshot EBS di belakang layar.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="05" id="image-builder" title="EC2 Image Builder" sub="Otomatisasi pembuatan dan perawatan AMI">
+
+<p class="lead">
+  EC2 Image Builder adalah layanan untuk membuat, merawat, menguji, dan
+  memvalidasi AMI secara otomatis. Cocok ketika kamu butuh AMI yang selalu
+  mutakhir dan konsisten tanpa kerja manual berulang.
+</p>
+
+Alurnya sederhana: layanan ini menjalankan instance pembangun, memasang serta mengonfigurasi software sesuai resep, membuat AMI baru, lalu menjalankan instance pengujian untuk memastikan AMI berfungsi. Proses ini bisa dijadwalkan, misalnya setiap minggu, agar AMI selalu segar.
+
+<Box variant="tip" icon="💡" label="Catatan biaya">
+  <p>
+    EC2 Image Builder sendiri gratis. Kamu hanya membayar sumber daya yang
+    dipakainya, seperti instance pembangun dan penyimpanan AMI.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="06" id="instance-store" title="EC2 Instance Store" sub="Disk fisik super cepat yang bersifat sementara">
+
+<p class="lead">
+  Instance Store adalah disk fisik yang menempel langsung pada server host
+  tempat instance kamu berjalan. Karena tidak lewat jaringan, performanya sangat
+  tinggi, tetapi datanya bersifat sementara.
+</p>
+
+<Box variant="analogy" icon="⚡" label="Analogi">
+  <p>
+    Instance Store ibarat meja kerja di samping mesin. Sangat cepat untuk
+    menaruh barang sementara, tetapi begitu mesin dimatikan, semua yang ada di
+    meja itu hilang.
+  </p>
+</Box>
+
+Karakter utamanya: I/O sangat kencang (IOPS tinggi), cocok untuk cache, buffer, atau data sementara. Namun data akan hilang jika instance dihentikan atau dihapus, dan ada risiko kehilangan data bila perangkat keras host bermasalah.
+
+<Box variant="warn" icon="⚠️" label="Hati-hati">
+  <p>
+    Jangan menyimpan data penting hanya di Instance Store. Pencadangan dan
+    replikasi menjadi tanggung jawabmu sendiri.
+  </p>
+</Box>
+
+<Box variant="exam" icon="🎓" label="Sorotan Ujian">
+  <p>
+    Jika soal menekankan performa I/O tertinggi atau menyebut data sementara
+    yang boleh hilang, jawabannya mengarah ke Instance Store. Jika menekankan
+    data harus bertahan, arahnya ke EBS.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="07" id="efs" title="Amazon EFS (Elastic File System)" sub="File system bersama lintas AZ">
+
+<p class="lead">
+  EFS adalah layanan file system NFS terkelola yang bisa dipasang ke banyak
+  instance EC2 sekaligus, bahkan yang berada di Availability Zone berbeda.
+  Kapasitasnya tumbuh dan menyusut otomatis sesuai pemakaian.
+</p>
+
+<Figure>
+  <StorageFig04 />
+  <Fragment slot="caption">
+    <b>Gambar 4.</b> Satu EFS dapat diakses bersama oleh banyak instance EC2 di
+    beberapa AZ sekaligus.
+  </Fragment>
+</Figure>
+
+EFS sangat cocok untuk kasus seperti berbagi berkas antar-server web, sistem manajemen konten, atau direktori bersama. Layanan ini sangat tersedia (highly available) dan mudah diskalakan, tetapi harganya relatif lebih mahal dibanding EBS dan ditagih sesuai pemakaian.
+
+<h3>Lifecycle dan tingkatan penyimpanan</h3>
+
+Untuk menghemat biaya, EFS bisa memindahkan berkas yang jarang diakses ke tingkat yang lebih murah secara otomatis, mulai dari Standard, Infrequent Access (EFS-IA), hingga Archive.
+
+<Box variant="exam" icon="🎓" label="Sorotan Ujian">
+  <p>
+    EFS hanya untuk sistem berbasis Linux (POSIX) dan memakai protokol NFS.
+    Kalau soal menyebut banyak instance lintas AZ yang berbagi berkas,
+    jawabannya EFS, bukan EBS.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="08" id="fsx" title="Amazon FSx" sub="File system pihak ketiga yang terkelola">
+
+<p class="lead">
+  Amazon FSx memungkinkan kamu menjalankan file system berperforma tinggi dari
+  pihak ketiga di atas AWS, tanpa repot mengelolanya sendiri. Ini melengkapi EFS
+  yang hanya cocok untuk Linux.
+</p>
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>FSx for Windows File Server</h4>
+    <p>
+      File system bersama untuk lingkungan Windows dengan protokol SMB dan
+      integrasi Active Directory.
+    </p>
+  </Card>
+  <Card>
+    <h4>FSx for Lustre</h4>
+    <p>
+      File system untuk komputasi berperforma tinggi (HPC) dan machine learning
+      yang butuh kecepatan ekstrem.
+    </p>
+  </Card>
+  <Card>
+    <h4>FSx for NetApp ONTAP</h4>
+    <p>
+      Kompatibel luas dengan beragam sistem operasi serta membawa fitur
+      penyimpanan ala NetApp.
+    </p>
+  </Card>
+  <Card>
+    <h4>FSx for OpenZFS</h4>
+    <p>
+      Berbasis file system OpenZFS untuk beban kerja yang sebelumnya sudah
+      memakainya.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="exam" icon="🎓" label="Sorotan Ujian">
+  <p>
+    Kata kunci Windows dan SMB mengarah ke FSx for Windows. Kata kunci HPC atau
+    machine learning mengarah ke FSx for Lustre.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="09" id="shared-responsibility" title="Shared Responsibility Model" sub="Siapa bertanggung jawab atas apa">
+
+<p class="lead">
+  Pada penyimpanan EC2, tanggung jawab dibagi antara AWS dan kamu sebagai
+  pengguna. Memahami pembagian ini penting agar data tetap aman.
+</p>
+
+| Tanggung jawab AWS                              | Tanggung jawab kamu                                          |
+| ----------------------------------------------- | ------------------------------------------------------------ |
+| Mengelola infrastruktur fisik                   | Mengatur dan menjadwalkan snapshot serta backup              |
+| Mengganti perangkat keras yang rusak            | Menyiapkan enkripsi data                                     |
+| Menjamin replikasi internal untuk EBS dan EFS   | Bertanggung jawab atas data yang disimpan di volume          |
+| Memastikan karyawan tidak bisa mengakses datamu | Mengelola risiko kehilangan data, terutama di Instance Store |
+
+<Box variant="exam" icon="🎓" label="Sorotan Ujian">
+  <p>
+    AWS menjaga infrastruktur dan mengganti perangkat keras, tetapi backup,
+    enkripsi, dan isi data adalah urusanmu.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="10" id="ringkasan" title="Ringkasan & Tips Ujian" sub="Rangkuman cepat sebelum lanjut">
+
+<p class="lead">
+  Mari rangkum semua pilihan penyimpanan EC2 dalam satu tabel agar mudah
+  dibandingkan saat mengerjakan soal.
+</p>
+
+| Layanan        | Tipe    | Lingkup         | Catatan singkat                                                              |
+| -------------- | ------- | --------------- | ---------------------------------------------------------------------------- |
+| EBS            | Block   | 1 AZ            | Disk jaringan, tahan lama, dipakai 1 instance (kecuali Multi-Attach io1/io2) |
+| Instance Store | Block   | Host fisik      | Sangat cepat, tetapi data hilang saat instance berhenti                      |
+| EFS            | File    | Lintas AZ       | NFS bersama, khusus Linux, mudah diskalakan                                  |
+| FSx            | File    | Bergantung tipe | File system terkelola untuk Windows, Lustre, dan lainnya                     |
+| Snapshot       | Backup  | Region          | Cadangan EBS, bisa disalin antar-Region                                      |
+| AMI            | Cetakan | Region          | Membuat instance siap pakai, bisa disalin antar-Region                       |
+
+<Recap title="Poin Penting">
+  <ul>
+    <li>
+      EBS adalah disk jaringan yang terikat satu AZ dan datanya tahan lama.
+    </li>
+    <li>
+      Instance Store menempel pada host, sangat cepat, tetapi datanya sementara.
+    </li>
+    <li>
+      EFS adalah file system bersama lintas AZ khusus Linux, sedangkan FSx
+      melayani Windows, Lustre, dan lainnya.
+    </li>
+    <li>
+      Snapshot mencadangkan EBS dan menjadi jalur memindahkan volume antar-AZ
+      atau antar-Region.
+    </li>
+    <li>
+      AMI mengemas instance siap pakai dan dibuat per Region, tetapi bisa
+      disalin.
+    </li>
+    <li>
+      Dalam Shared Responsibility, backup dan enkripsi data ada di tanganmu.
+    </li>
+  </ul>
+</Recap>
+
+<Box variant="tip" icon="💡" label="Langkah selanjutnya">
+  <p>
+    Setelah paham penyimpanan EC2, lanjutkan ke topik scaling seperti Load
+    Balancer dan Auto Scaling Group untuk melihat bagaimana semuanya bekerja
+    bersama.
+  </p>
+</Box>
+
+</Section>

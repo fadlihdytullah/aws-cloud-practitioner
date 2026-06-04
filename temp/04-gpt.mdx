@@ -1,0 +1,766 @@
+---
+title: "Modul ELB & ASG — Fundamental AWS untuk Pemula - GPT"
+badge: "ELB"
+topTitle: "Elastic Load Balancing & Auto Scaling Groups"
+topSub: "Fundamental AWS untuk Pemula"
+summary: "Pelajari cara membuat aplikasi tetap tersedia, mampu menangani lonjakan traffic, dan otomatis menyesuaikan kapasitas dengan ELB dan ASG."
+order: 5
+target: "CLF-C02 → SAA-C03"
+readingTime: "~70 menit baca"
+summaryHref: "#ringkasan"
+toc:
+  - {
+      num: "01",
+      id: "intro",
+      title: "High Availability, Scalability, Elasticity",
+    }
+  - { num: "02", id: "elb-overview", title: "Elastic Load Balancing Overview" }
+  - { num: "03", id: "jenis-load-balancer", title: "Jenis-Jenis Load Balancer" }
+  - {
+      num: "04",
+      id: "alb-hands-on",
+      title: "Application Load Balancer Hands On",
+    }
+  - { num: "05", id: "asg-overview", title: "Auto Scaling Groups Overview" }
+  - { num: "06", id: "asg-hands-on", title: "Auto Scaling Groups Hands On" }
+  - {
+      num: "07",
+      id: "strategi-scaling",
+      title: "Auto Scaling Groups Strategies",
+    }
+  - { num: "08", id: "ringkasan", title: "Ringkasan & Tips Ujian" }
+footerTitle: "Modul ELB & ASG — Fundamental AWS untuk Pemula"
+footerSub: "Disusun untuk persiapan CLF-C02 → SAA-C03"
+---
+
+import {
+  Section,
+  Box,
+  Steps,
+  Step,
+  Recap,
+  CardGrid,
+  Card,
+  Chip,
+  Hero,
+  Figure,
+} from "@components";
+import ELBASGFig01 from "@figures/ELBASGFig01.astro";
+import ELBASGFig02 from "@figures/ELBASGFig02.astro";
+
+<Hero
+  eyebrow="Modul &middot; Compute"
+  title="Elastic Load Balancing<br /><em>&amp; Auto Scaling Groups</em>"
+>
+  <p>
+    Bangun aplikasi yang tetap responsif saat traffic naik turun, tanpa harus
+    menambah server secara manual.
+  </p>
+  <Fragment slot="meta">
+    <Chip icon="target">
+      Target: <b>CLF-C02</b> &rarr; SAA-C03
+    </Chip>
+    <Chip icon="clock">~70 menit baca</Chip>
+  </Fragment>
+</Hero>
+
+<Section num="01" id="intro" title="High Availability, Scalability, Elasticity" sub="Tiga konsep dasar sebelum masuk ke ELB dan ASG">
+
+<p class="lead">
+  Sebelum belajar load balancer dan auto scaling, kita perlu memahami tiga kata
+  yang sering muncul di AWS: high availability, scalability, dan elasticity.
+</p>
+
+Bayangkan aplikasi web seperti restoran. Saat pelanggan sedikit, satu kasir cukup. Saat jam makan siang, antrean menjadi panjang. Restoran yang baik tidak hanya punya kasir cepat, tetapi juga bisa membuka kasir tambahan dan tetap melayani pelanggan meskipun salah satu kasir sedang bermasalah.
+
+<CardGrid cols={3}>
+  <Card>
+    <h4>High Availability</h4>
+    <p>
+      Aplikasi tetap berjalan meskipun ada gangguan pada satu server, satu
+      Availability Zone, atau satu komponen.
+    </p>
+  </Card>
+  <Card>
+    <h4>Scalability</h4>
+    <p>
+      Kapasitas aplikasi bisa ditingkatkan agar mampu menangani lebih banyak
+      pengguna, request, atau data.
+    </p>
+  </Card>
+  <Card>
+    <h4>Elasticity</h4>
+    <p>
+      Kapasitas naik dan turun secara otomatis mengikuti kebutuhan aktual,
+      sehingga biaya lebih efisien.
+    </p>
+  </Card>
+</CardGrid>
+
+<Figure>
+  <ELBASGFig01 />
+  <Fragment slot="caption">
+    <b>Gambar 1.</b> ELB menerima traffic pengguna, lalu membaginya ke beberapa
+    EC2 instance yang dikelola oleh Auto Scaling Group.
+  </Fragment>
+</Figure>
+
+<Box variant="analogy" icon="🍽️" label="Analogi restoran">
+  <p>
+    Elastic Load Balancer seperti kepala pelayan yang mengarahkan pelanggan ke
+    meja kosong. Auto Scaling Group seperti manajer restoran yang membuka meja
+    tambahan saat ramai dan menutupnya saat sepi.
+  </p>
+</Box>
+
+<h3>Vertical scaling dan horizontal scaling</h3>
+
+Vertical scaling berarti memperbesar satu server, misalnya dari instance kecil menjadi instance besar. Horizontal scaling berarti menambah jumlah server, misalnya dari dua EC2 instance menjadi enam EC2 instance. ELB dan ASG lebih sering digunakan untuk horizontal scaling karena pendekatan ini cocok untuk aplikasi modern yang butuh high availability.
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Vertical Scaling</h4>
+    <p>
+      Naik kelas instance, misalnya dari <code>t3.micro</code> ke{" "}
+      <code>m7i.large</code>. Mudah dipahami, tetapi ada batas ukuran dan bisa
+      membutuhkan downtime.
+    </p>
+  </Card>
+  <Card>
+    <h4>Horizontal Scaling</h4>
+    <p>
+      Menambah jumlah instance. Cocok untuk aplikasi web, API, dan worker yang
+      bisa berjalan di banyak server sekaligus.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="exam" icon="🎯" label="Fokus ujian">
+  <p>
+    Untuk CLF-C02, pahami manfaat high availability dan elasticity secara
+    konsep. Untuk SAA-C03, pahami bagaimana ELB, ASG, health check, Availability
+    Zone, dan scaling policy saling bekerja.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="02" id="elb-overview" title="Elastic Load Balancing Overview" sub="Membagi traffic agar aplikasi lebih stabil">
+
+<p class="lead">
+  Elastic Load Balancing (ELB) adalah layanan AWS yang mendistribusikan traffic
+  masuk ke beberapa target, seperti EC2 instance, container, atau IP address.
+</p>
+
+Tanpa load balancer, pengguna biasanya diarahkan langsung ke satu server. Jika server itu penuh atau mati, aplikasi ikut bermasalah. Dengan ELB, pengguna mengakses satu endpoint, lalu AWS membagikan traffic ke target yang sehat.
+
+<Steps>
+  <Step>
+    <b>Pengguna mengakses aplikasi</b>
+    <p>
+      Pengguna membuka domain aplikasi, misalnya <code>app.example.com</code>.
+    </p>
+  </Step>
+  <Step>
+    <b>DNS mengarah ke ELB</b>
+    <p>
+      Domain diarahkan ke DNS name milik load balancer, bukan langsung ke EC2
+      instance.
+    </p>
+  </Step>
+  <Step>
+    <b>ELB memilih target sehat</b>
+    <p>
+      ELB menggunakan health check untuk mengetahui instance mana yang siap
+      menerima traffic.
+    </p>
+  </Step>
+  <Step>
+    <b>Traffic diteruskan</b>
+    <p>
+      Request dikirim ke target yang sehat di satu atau beberapa Availability
+      Zone.
+    </p>
+  </Step>
+</Steps>
+
+<h3>Manfaat utama ELB</h3>
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Distribusi traffic</h4>
+    <p>
+      Traffic tidak menumpuk di satu EC2 instance saja, sehingga aplikasi lebih
+      responsif.
+    </p>
+  </Card>
+  <Card>
+    <h4>Health check otomatis</h4>
+    <p>ELB dapat berhenti mengirim traffic ke target yang tidak sehat.</p>
+  </Card>
+  <Card>
+    <h4>High availability</h4>
+    <p>
+      ELB bisa bekerja lintas Availability Zone untuk mengurangi risiko
+      gangguan.
+    </p>
+  </Card>
+  <Card>
+    <h4>Integrasi SSL/TLS</h4>
+    <p>
+      Load balancer dapat menangani HTTPS, sehingga backend bisa lebih
+      sederhana.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="tip" icon="💡" label="DNS name, bukan IP tetap">
+  <p>
+    ELB memiliki DNS name. Di praktik nyata, kita biasanya membuat record di
+    Route 53 atau DNS provider lain yang mengarah ke DNS name ELB.
+  </p>
+</Box>
+
+<h3>Target group</h3>
+
+Target group adalah kumpulan target yang akan menerima traffic dari load balancer. Pada Application Load Balancer, target group sering berisi EC2 instance pada port tertentu, misalnya port 80 untuk HTTP atau port 8080 untuk aplikasi backend.
+
+<Box variant="warn" icon="⚠️" label="Jangan lupa security group">
+  <p>
+    Jika ELB tidak bisa mengakses EC2 instance, sering kali penyebabnya adalah
+    aturan security group. Biasanya security group EC2 harus mengizinkan inbound
+    traffic dari security group milik load balancer.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="03" id="jenis-load-balancer" title="Jenis-Jenis Load Balancer" sub="ALB, NLB, GWLB, dan Classic Load Balancer">
+
+<p class="lead">
+  AWS menyediakan beberapa tipe load balancer. Untuk pemula, yang paling sering
+  dipakai adalah Application Load Balancer dan Network Load Balancer.
+</p>
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Application Load Balancer (ALB)</h4>
+    <p>
+      Bekerja di layer 7 untuk HTTP dan HTTPS. Cocok untuk web app, REST API,
+      path routing, host routing, dan microservices.
+    </p>
+  </Card>
+  <Card>
+    <h4>Network Load Balancer (NLB)</h4>
+    <p>
+      Bekerja di layer 4 untuk TCP, UDP, dan TLS. Cocok untuk performa sangat
+      tinggi, latency rendah, dan static IP.
+    </p>
+  </Card>
+  <Card>
+    <h4>Gateway Load Balancer (GWLB)</h4>
+    <p>
+      Digunakan untuk menjalankan appliance jaringan pihak ketiga, misalnya
+      firewall, IDS, atau IPS.
+    </p>
+  </Card>
+  <Card>
+    <h4>Classic Load Balancer (CLB)</h4>
+    <p>
+      Generasi lama load balancer. Masih bisa ditemukan di sistem lama, tetapi
+      untuk desain baru biasanya gunakan ALB atau NLB.
+    </p>
+  </Card>
+</CardGrid>
+
+<h3>Kapan memakai ALB?</h3>
+
+ALB cocok saat aplikasi berbasis HTTP atau HTTPS dan membutuhkan routing yang memahami isi request. Misalnya, request ke <code>/api</code> diarahkan ke backend API, sedangkan request ke <code>/images</code> diarahkan ke service gambar.
+
+<h3>Kapan memakai NLB?</h3>
+
+NLB cocok saat aplikasi butuh throughput tinggi, latency sangat rendah, protokol TCP atau UDP, atau static IP. Contoh umum adalah sistem real-time, gaming backend, atau layanan TCP yang tidak berbasis HTTP.
+
+<Box variant="exam" icon="🧠" label="Petunjuk ujian">
+  <p>
+    Jika soal menyebut HTTP, HTTPS, path-based routing, host-based routing, atau
+    web application, jawabannya sering ALB. Jika soal menyebut TCP, UDP, high
+    performance, low latency, atau static IP, jawabannya sering NLB.
+  </p>
+</Box>
+
+<table>
+  <thead>
+    <tr>
+      <th>Fitur</th>
+      <th>ALB</th>
+      <th>NLB</th>
+      <th>GWLB</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Layer</td>
+      <td>Layer 7</td>
+      <td>Layer 4</td>
+      <td>Layer 3/4</td>
+    </tr>
+    <tr>
+      <td>Protokol umum</td>
+      <td>HTTP, HTTPS</td>
+      <td>TCP, UDP, TLS</td>
+      <td>Geneve</td>
+    </tr>
+    <tr>
+      <td>Use case utama</td>
+      <td>Web app dan API</td>
+      <td>Traffic performa tinggi</td>
+      <td>Appliance jaringan</td>
+    </tr>
+    <tr>
+      <td>Routing cerdas</td>
+      <td>Path dan host</td>
+      <td>Tidak seperti ALB</td>
+      <td>Untuk inspeksi traffic</td>
+    </tr>
+  </tbody>
+</table>
+
+</Section>
+
+<Section num="04" id="alb-hands-on" title="Application Load Balancer Hands On" sub="Alur praktik membuat ALB untuk aplikasi web">
+
+<p class="lead">
+  Pada praktik ALB, tujuan utamanya adalah membuat satu endpoint publik yang
+  membagi traffic ke beberapa EC2 instance di belakangnya.
+</p>
+
+<Steps>
+  <Step>
+    <b>Siapkan EC2 instance</b>
+    <p>
+      Buat minimal dua EC2 instance di Availability Zone berbeda. Jalankan web
+      server sederhana di masing-masing instance.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat security group untuk ALB</b>
+    <p>
+      Izinkan inbound HTTP port 80 dari internet. Untuk HTTPS, gunakan port 443
+      dan sertifikat SSL/TLS.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat security group untuk EC2</b>
+    <p>
+      Izinkan inbound HTTP dari security group ALB, bukan dari seluruh internet,
+      agar akses backend lebih aman.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat target group</b>
+    <p>
+      Pilih target type instance, protocol HTTP, dan port aplikasi. Tambahkan
+      EC2 instance sebagai target.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat Application Load Balancer</b>
+    <p>
+      Pilih internet-facing untuk aplikasi publik, aktifkan minimal dua
+      Availability Zone, lalu hubungkan listener ke target group.
+    </p>
+  </Step>
+  <Step>
+    <b>Uji DNS name ALB</b>
+    <p>
+      Buka DNS name load balancer di browser. Refresh beberapa kali untuk
+      melihat traffic berpindah antar instance.
+    </p>
+  </Step>
+</Steps>
+
+<h3>Listener dan rule</h3>
+
+Listener adalah proses yang menunggu koneksi pada port tertentu. Contoh paling umum adalah listener HTTP port 80 dan HTTPS port 443. Rule menentukan apa yang dilakukan load balancer terhadap request yang masuk.
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Listener</h4>
+    <p>
+      Tempat ALB menerima traffic, misalnya HTTP port 80 atau HTTPS port 443.
+    </p>
+  </Card>
+  <Card>
+    <h4>Rule</h4>
+    <p>
+      Instruksi routing, misalnya semua request diteruskan ke target group
+      utama.
+    </p>
+  </Card>
+  <Card>
+    <h4>Target Group</h4>
+    <p>
+      Kumpulan backend yang menerima traffic, misalnya beberapa EC2 instance.
+    </p>
+  </Card>
+  <Card>
+    <h4>Health Check</h4>
+    <p>Endpoint yang diperiksa ALB untuk menentukan apakah target sehat.</p>
+  </Card>
+</CardGrid>
+
+<Box variant="tip" icon="🔎" label="Health check path">
+  <p>
+    Gunakan path yang benar-benar menunjukkan aplikasi sehat, misalnya{" "}
+    <code>/health</code>. Jangan hanya memakai halaman statis jika backend utama
+    bisa gagal tanpa terdeteksi.
+  </p>
+</Box>
+
+<h3>Path-based routing</h3>
+
+Dengan ALB, kita bisa membuat rule seperti ini: request ke <code>/api</code> masuk ke target group API, sedangkan request ke <code>/admin</code> masuk ke target group admin. Ini sangat berguna untuk arsitektur microservices.
+
+<Box variant="analogy" icon="🏢" label="Analogi resepsionis gedung">
+  <p>
+    ALB seperti resepsionis yang membaca tujuan tamu. Tamu ke lantai finance
+    diarahkan ke tim finance, tamu ke lantai engineering diarahkan ke tim
+    engineering.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="05" id="asg-overview" title="Auto Scaling Groups Overview" sub="Menjaga jumlah EC2 instance sesuai kebutuhan">
+
+<p class="lead">
+  Auto Scaling Group (ASG) adalah fitur AWS untuk menjaga jumlah EC2 instance
+  sesuai kapasitas yang kita inginkan, termasuk menambah instance saat beban
+  naik dan mengurangi instance saat beban turun.
+</p>
+
+ASG biasanya menggunakan launch template. Launch template berisi resep pembuatan EC2 instance, seperti AMI, instance type, key pair, security group, user data, dan konfigurasi lain. ASG kemudian memakai resep ini untuk membuat instance baru secara otomatis.
+
+<Figure>
+  <ELBASGFig02 />
+  <Fragment slot="caption">
+    <b>Gambar 2.</b> Auto Scaling Group menjaga kapasitas berdasarkan minimum,
+    desired, dan maximum capacity.
+  </Fragment>
+</Figure>
+
+<CardGrid cols={3}>
+  <Card>
+    <h4>Minimum Capacity</h4>
+    <p>Jumlah instance paling sedikit yang harus selalu tersedia.</p>
+  </Card>
+  <Card>
+    <h4>Desired Capacity</h4>
+    <p>Jumlah instance yang sedang diusahakan ASG untuk dijalankan saat ini.</p>
+  </Card>
+  <Card>
+    <h4>Maximum Capacity</h4>
+    <p>Jumlah instance paling banyak yang boleh dibuat oleh ASG.</p>
+  </Card>
+</CardGrid>
+
+<h3>Contoh sederhana</h3>
+
+Jika minimum adalah 2, desired adalah 2, dan maximum adalah 6, maka ASG akan menjaga minimal 2 instance tetap berjalan. Saat traffic naik dan policy scaling terpenuhi, ASG dapat menaikkan desired capacity sampai maksimal 6 instance.
+
+<Box variant="tip" icon="💡" label="ASG bukan hanya untuk scaling">
+  <p>
+    ASG juga membantu self-healing. Jika satu instance mati atau tidak sehat,
+    ASG dapat menggantinya dengan instance baru.
+  </p>
+</Box>
+
+<h3>Integrasi ASG dengan ELB</h3>
+
+ASG dapat didaftarkan ke target group milik load balancer. Saat ASG membuat instance baru, instance tersebut bisa otomatis masuk ke target group. Saat ASG menghapus instance, traffic bisa dihentikan secara bertahap agar pengguna tidak terganggu.
+
+<Box variant="exam" icon="🎯" label="Fokus ujian">
+  <p>
+    ASG membantu elasticity dan availability. ELB membagi traffic. Kombinasi
+    keduanya adalah pola umum untuk aplikasi web yang scalable dan highly
+    available.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="06" id="asg-hands-on" title="Auto Scaling Groups Hands On" sub="Alur praktik membuat ASG dengan launch template">
+
+<p class="lead">
+  Pada praktik ASG, kita membuat template EC2, menentukan kapasitas, memilih
+  subnet di beberapa Availability Zone, lalu menghubungkannya ke load balancer.
+</p>
+
+<Steps>
+  <Step>
+    <b>Buat launch template</b>
+    <p>
+      Tentukan AMI, instance type, key pair, security group, dan user data untuk
+      menjalankan aplikasi otomatis saat instance dibuat.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat Auto Scaling Group</b>
+    <p>
+      Pilih launch template, lalu pilih VPC dan subnet di minimal dua
+      Availability Zone.
+    </p>
+  </Step>
+  <Step>
+    <b>Hubungkan ke load balancer</b>
+    <p>
+      Pilih target group yang digunakan ALB agar instance baru otomatis menerima
+      traffic.
+    </p>
+  </Step>
+  <Step>
+    <b>Atur capacity</b>
+    <p>Isi minimum, desired, dan maximum capacity sesuai kebutuhan awal.</p>
+  </Step>
+  <Step>
+    <b>Tambahkan scaling policy</b>
+    <p>
+      Gunakan metrik seperti CPU utilization agar ASG bisa menambah atau
+      mengurangi instance secara otomatis.
+    </p>
+  </Step>
+  <Step>
+    <b>Uji scaling</b>
+    <p>
+      Naikkan beban aplikasi, pantau CloudWatch metric, lalu lihat apakah ASG
+      menambah instance sesuai policy.
+    </p>
+  </Step>
+</Steps>
+
+<h3>User data untuk bootstrap</h3>
+
+User data adalah script yang dijalankan saat EC2 instance pertama kali dibuat. Dalam praktik pemula, user data sering dipakai untuk memasang web server dan membuat halaman sederhana agar instance langsung siap melayani traffic.
+
+<pre>
+  <code>
+    #!/bin/bash yum update -y yum install -y httpd systemctl enable httpd
+    systemctl start httpd echo "Halo dari Auto Scaling Group" &gt;
+    /var/www/html/index.html
+  </code>
+</pre>
+
+<Box variant="warn" icon="⚠️" label="Masalah umum saat hands on">
+  <p>
+    Jika instance terlihat sehat di EC2 tetapi unhealthy di target group, cek
+    health check path, port aplikasi, security group, dan apakah web server
+    benar-benar berjalan.
+  </p>
+</Box>
+
+<h3>Lifecycle instance dalam ASG</h3>
+
+Instance dalam ASG bisa berada dalam proses launch, in service, terminating, atau diganti karena health check gagal. Untuk desain produksi, kita juga bisa memakai lifecycle hooks agar ada proses tambahan sebelum instance menerima traffic atau sebelum dihentikan.
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Launch</h4>
+    <p>ASG membuat instance baru berdasarkan launch template.</p>
+  </Card>
+  <Card>
+    <h4>In Service</h4>
+    <p>Instance sudah siap dan bisa menerima traffic dari target group.</p>
+  </Card>
+  <Card>
+    <h4>Unhealthy</h4>
+    <p>Instance dianggap bermasalah berdasarkan health check EC2 atau ELB.</p>
+  </Card>
+  <Card>
+    <h4>Terminate</h4>
+    <p>
+      ASG menghentikan instance, lalu bisa menggantinya jika kapasitas minimum
+      harus dijaga.
+    </p>
+  </Card>
+</CardGrid>
+
+</Section>
+
+<Section num="07" id="strategi-scaling" title="Auto Scaling Groups Strategies" sub="Cara menentukan kapan kapasitas naik dan turun">
+
+<p class="lead">
+  Scaling strategy menentukan kapan ASG menambah atau mengurangi EC2 instance.
+  Tujuannya adalah menjaga performa aplikasi tanpa membayar kapasitas berlebih
+  terlalu lama.
+</p>
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Manual Scaling</h4>
+    <p>
+      Kita mengubah desired capacity secara manual. Cocok untuk latihan atau
+      perubahan sementara.
+    </p>
+  </Card>
+  <Card>
+    <h4>Scheduled Scaling</h4>
+    <p>
+      Kapasitas berubah berdasarkan jadwal, misalnya naik setiap Senin pagi
+      sebelum traffic kantor dimulai.
+    </p>
+  </Card>
+  <Card>
+    <h4>Dynamic Scaling</h4>
+    <p>
+      Kapasitas berubah berdasarkan metrik CloudWatch, misalnya CPU utilization
+      atau request count.
+    </p>
+  </Card>
+  <Card>
+    <h4>Predictive Scaling</h4>
+    <p>
+      AWS memprediksi kebutuhan kapasitas berdasarkan pola historis. Cocok untuk
+      traffic yang punya pola berulang.
+    </p>
+  </Card>
+</CardGrid>
+
+<h3>Dynamic scaling policy</h3>
+
+Ada beberapa pendekatan dynamic scaling yang penting dipahami. Target tracking adalah yang paling mudah untuk banyak kasus karena kita cukup menentukan target metrik, misalnya menjaga rata-rata CPU di sekitar 50 persen.
+
+<CardGrid cols={3}>
+  <Card>
+    <h4>Target Tracking</h4>
+    <p>
+      ASG menyesuaikan kapasitas agar metrik mendekati target, misalnya CPU 50
+      persen.
+    </p>
+  </Card>
+  <Card>
+    <h4>Step Scaling</h4>
+    <p>
+      ASG menambah atau mengurangi kapasitas dalam langkah berbeda berdasarkan
+      tingkat alarm.
+    </p>
+  </Card>
+  <Card>
+    <h4>Simple Scaling</h4>
+    <p>
+      Model lama yang menjalankan satu aksi scaling saat alarm terpenuhi,
+      biasanya kurang fleksibel.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="analogy" icon="🌡️" label="Analogi AC otomatis">
+  <p>
+    Target tracking seperti AC yang menjaga suhu ruangan di 24 derajat. Jika
+    ruangan panas, AC bekerja lebih kuat. Jika sudah dingin, AC mengurangi
+    kerja.
+  </p>
+</Box>
+
+<h3>Cooldown dan warm-up</h3>
+
+Cooldown dan warm-up membantu mencegah ASG bereaksi terlalu cepat. Instance baru butuh waktu untuk booting, menjalankan user data, masuk target group, dan benar-benar melayani traffic. Tanpa jeda yang tepat, ASG bisa menambah terlalu banyak instance karena metrik belum stabil.
+
+<Box variant="exam" icon="🧠" label="Tips SAA-C03">
+  <p>
+    Untuk aplikasi web umum, pola yang sering benar adalah ALB plus target group
+    plus ASG multi-AZ plus target tracking scaling policy. Tambahkan health
+    check ELB agar instance yang gagal dari sudut pandang aplikasi bisa diganti.
+  </p>
+</Box>
+
+</Section>
+
+<Section num="08" id="ringkasan" title="Ringkasan & Tips Ujian" sub="Poin yang paling perlu diingat">
+
+<p class="lead">
+  ELB dan ASG adalah pasangan penting untuk membuat aplikasi AWS lebih highly
+  available, scalable, dan elastic.
+</p>
+
+<Recap title="Poin Penting">
+  <ul>
+    <li>
+      <strong>ELB</strong> mendistribusikan traffic ke beberapa target yang
+      sehat.
+    </li>
+    <li>
+      <strong>ALB</strong> cocok untuk HTTP/HTTPS, path-based routing,
+      host-based routing, dan aplikasi web.
+    </li>
+    <li>
+      <strong>NLB</strong> cocok untuk TCP/UDP, performa tinggi, latency rendah,
+      dan kebutuhan static IP.
+    </li>
+    <li>
+      <strong>Target group</strong> adalah kumpulan backend yang menerima
+      traffic dari load balancer.
+    </li>
+    <li>
+      <strong>Health check</strong> membantu ELB berhenti mengirim traffic ke
+      target yang bermasalah.
+    </li>
+    <li>
+      <strong>ASG</strong> menjaga jumlah EC2 instance berdasarkan minimum,
+      desired, dan maximum capacity.
+    </li>
+    <li>
+      <strong>Launch template</strong> adalah resep pembuatan EC2 instance untuk
+      ASG.
+    </li>
+    <li>
+      <strong>Scaling policy</strong> menentukan kapan ASG menambah atau
+      mengurangi instance.
+    </li>
+    <li>
+      <strong>ELB plus ASG</strong> adalah pola umum untuk aplikasi web yang
+      highly available dan elastic.
+    </li>
+  </ul>
+</Recap>
+
+<h3>Checklist pemahaman</h3>
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>Untuk CLF-C02</h4>
+    <p>
+      Pahami definisi high availability, scalability, elasticity, ELB, ASG, dan
+      manfaat otomatisasi kapasitas.
+    </p>
+  </Card>
+  <Card>
+    <h4>Untuk SAA-C03</h4>
+    <p>
+      Pahami pilihan ALB versus NLB, health check, target group, multi-AZ,
+      launch template, dan scaling policy.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="exam" icon="🎯" label="Pola jawaban ujian">
+  <p>
+    Jika soal meminta aplikasi web tetap tersedia saat instance gagal dan mampu
+    menyesuaikan kapasitas saat traffic berubah, pikirkan kombinasi Application
+    Load Balancer, target group, Auto Scaling Group, dan deployment di beberapa
+    Availability Zone.
+  </p>
+</Box>
+
+<h3>Latihan cepat</h3>
+
+<ol>
+  <li>Apa perbedaan high availability dan scalability?</li>
+  <li>Kapan lebih tepat memilih ALB dibanding NLB?</li>
+  <li>Apa fungsi target group pada ELB?</li>
+  <li>Mengapa ASG perlu launch template?</li>
+  <li>Apa arti minimum, desired, dan maximum capacity?</li>
+  <li>Mengapa health check ELB penting untuk aplikasi web?</li>
+</ol>
+
+</Section>

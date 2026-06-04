@@ -1,0 +1,33 @@
+---
+// Diekstrak verbatim dari ec2-fundamental-aws.html (figure #1)
+---
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L7,3 L0,6 Z" fill="#ec7211"/>
+        </marker>
+      </defs>
+      <rect x="22" y="135" width="120" height="74" rx="8" fill="#232f3e"/>
+      <rect x="34" y="146" width="96" height="52" rx="4" fill="#37485e"/>
+      <rect x="14" y="209" width="136" height="9" rx="4" fill="#232f3e"/>
+      <text x="82" y="246" text-anchor="middle" font-size="13" fill="#42505e" font-weight="600">Kamu (browser/SSH)</text>
+      <line x1="158" y1="172" x2="232" y2="172" stroke="#ec7211" stroke-width="3" marker-end="url(#arr)"/>
+      <text x="194" y="160" text-anchor="middle" font-size="11" fill="#ec7211" font-weight="600">internet</text>
+      <rect x="248" y="40" width="492" height="262" rx="16" fill="#fbf8f1" stroke="#e3dccb" stroke-width="2"/>
+      <text x="268" y="64" font-size="13" fill="#ec7211" font-weight="700">☁ AWS Region (mis. ap-southeast-1, Singapura)</text>
+      <rect x="268" y="80" width="448" height="200" rx="12" fill="#fff" stroke="#cfe0e3" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="284" y="102" font-size="12" fill="#127c8a" font-weight="700">Availability Zone</text>
+      <rect x="288" y="116" width="408" height="148" rx="10" fill="#eef3f6" stroke="#cfd9e0"/>
+      <text x="304" y="138" font-size="12" fill="#42505e" font-weight="600">🏢 Server fisik milik AWS</text>
+      <g>
+        <rect x="308" y="152" width="118" height="96" rx="9" fill="#232f3e"/>
+        <text x="367" y="178" text-anchor="middle" font-size="13" fill="#ff9d4d" font-weight="700">EC2</text>
+        <text x="367" y="196" text-anchor="middle" font-size="11" fill="#cdd6e1">Instance KAMU</text>
+        <rect x="324" y="208" width="86" height="22" rx="5" fill="#37485e"/>
+        <text x="367" y="223" text-anchor="middle" font-size="10" fill="#a6e3a1">Laravel app ▶</text>
+      </g>
+      <rect x="440" y="152" width="118" height="96" rx="9" fill="#e3dccb" opacity=".6"/>
+      <text x="499" y="204" text-anchor="middle" font-size="11" fill="#7a8794">instance lain</text>
+      <rect x="572" y="152" width="108" height="96" rx="9" fill="#e3dccb" opacity=".4"/>
+      <text x="626" y="204" text-anchor="middle" font-size="11" fill="#7a8794">…</text>
+    </svg>

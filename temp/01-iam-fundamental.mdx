@@ -1,0 +1,603 @@
+---
+title: "AWS IAM — Panduan Fundamental untuk Pemula"
+badge: "IAM"
+topTitle: "AWS IAM"
+topSub: "Fundamental AWS untuk Pemula"
+summary: "Fondasi keamanan AWS: mengatur siapa boleh mengakses apa lewat Users, Groups, Policies, MFA, dan Roles."
+order: 1
+target: "CLF-C02"
+readingTime: "~45 menit baca"
+summaryHref: "#ringkasan"
+footerTitle: "Fundamental AWS untuk Pemula · Modul AWS IAM"
+footerSub: "Disusun dengan bahasa sederhana & visual untuk memudahkan pemahaman."
+toc:
+  - { num: "01", id: "intro", title: "Apa itu IAM?" }
+  - { num: "02", id: "users", title: "Users & Groups" }
+  - { num: "03", id: "policies", title: "Policies" }
+  - { num: "04", id: "login", title: "Login Bersamaan" }
+  - { num: "05", id: "mfa", title: "MFA" }
+  - { num: "06", id: "access", title: "Access Key, CLI & SDK" }
+  - { num: "07", id: "cli", title: "Setup AWS CLI" }
+  - { num: "08", id: "cloudshell", title: "CloudShell" }
+  - { num: "09", id: "roles", title: "IAM Roles" }
+  - { num: "10", id: "tools", title: "Security Tools" }
+  - { num: "11", id: "best", title: "Best Practices" }
+  - { num: "12", id: "shared", title: "Shared Responsibility" }
+  - { num: "13", id: "ringkasan", title: "Ringkasan" }
+---
+
+import {
+  Section,
+  Box,
+  Steps,
+  Step,
+  Recap,
+  CardGrid,
+  Card,
+  Figure,
+  Hero,
+  Chip,
+} from "@components";
+import IAMFig01 from "@figures/IAMFig01.astro";
+import IAMFig02 from "@figures/IAMFig02.astro";
+import IAMFig03 from "@figures/IAMFig03.astro";
+import IAMFig04 from "@figures/IAMFig04.astro";
+import IAMFig05 from "@figures/IAMFig05.astro";
+import IAMFig06 from "@figures/IAMFig06.astro";
+
+<Hero eyebrow="Modul &middot; Keamanan" title="Mengelola <em>siapa</em> boleh mengakses <em>apa</em> di AWS">
+  <p>IAM adalah fondasi keamanan AWS. Sebelum membuat server, database, atau apa pun, Anda perlu paham cara mengatur identitas dan izin. Panduan ini membahasnya dari nol, dengan bahasa sederhana dan visual.</p>
+  <Fragment slot="meta">
+    <Chip icon="clock">~45 menit baca</Chip>
+    <Chip icon="target">Level <b>Pemula</b></Chip>
+    <Chip icon="gift">Gratis &middot; <b>Global Service</b></Chip>
+  </Fragment>
+</Hero>
+
+<Section num="01" id="intro" title="Apa itu IAM?" sub="Identity and Access Management — Users, Groups, dan Policies">
+<p><strong>IAM (Identity and Access Management)</strong> adalah layanan AWS untuk mengatur <em class="term">identitas</em> (siapa) dan <em class="term">izin akses</em> (boleh melakukan apa) di dalam akun AWS Anda. Singkatnya: IAM menentukan <strong>siapa boleh masuk</strong> dan <strong>apa yang boleh mereka lakukan</strong>.</p>
+
+<p>
+  Saat pertama membuat akun AWS, Anda mendapat satu identitas super-kuat bernama{" "}
+  <em class="term">Root User</em>. Root bisa melakukan <em>segalanya</em> tanpa
+  batas — dan justru karena itu sangat berbahaya jika sampai jatuh ke tangan
+  yang salah. Karena itu, root sebaiknya hampir tidak pernah dipakai untuk
+  pekerjaan harian.
+</p>
+
+<Box variant="analogy" label="🏢 Analogi">
+  <p>
+    Bayangkan akun AWS Anda adalah sebuah <strong>gedung kantor</strong>.{" "}
+    <strong>Root user</strong> adalah pemilik gedung yang punya kunci master ke
+    semua ruangan — sangat berbahaya kalau hilang. <strong>IAM Users</strong>{" "}
+    adalah karyawan dengan kartu akses masing-masing. <strong>Groups</strong>{" "}
+    adalah divisi (Finance, Developer, HR). <strong>Policies</strong> adalah
+    aturan tertulis: "Divisi Finance boleh masuk ruang brankas, tapi tidak boleh
+    masuk ruang server."
+  </p>
+</Box>
+
+<p>Tiga konsep inti yang akan kita pakai berulang kali:</p>
+<div class="def">
+  <div class="dterm">User</div>
+  <p>
+    Satu identitas untuk satu orang nyata (misalnya: Andi, Budi). Setiap orang
+    sebaiknya punya user IAM sendiri.
+  </p>
+</div>
+<div class="def">
+  <div class="dterm">Group</div>
+  <p>
+    Kumpulan user. Group <strong>hanya bisa berisi user</strong> — tidak bisa
+    berisi group lain. Satu user bisa masuk ke beberapa group, atau tidak masuk
+    group sama sekali.
+  </p>
+</div>
+<div class="def">
+  <div class="dterm">Policy</div>
+  <p>
+    Dokumen (format JSON) yang mendefinisikan izin: layanan apa yang boleh/tidak
+    boleh diakses dan tindakan apa yang boleh dilakukan. Policy bisa ditempel ke
+    User maupun Group.
+  </p>
+</div>
+
+<Figure>
+<IAMFig01 />
+<Fragment slot="caption"><b>Struktur dasar IAM:</b> Root di atas, lalu Users dikelompokkan ke dalam Groups, dengan Policies yang menentukan izin.</Fragment>
+</Figure>
+</Section>
+
+<Section num="02" id="users" title="IAM Users & Groups" sub="Membuat identitas untuk setiap orang dan mengelompokkannya">
+<p>Praktik yang benar: <strong>buat satu IAM user untuk setiap orang</strong>, lalu masukkan ke group sesuai perannya. Jangan pernah berbagi satu user untuk banyak orang, dan jangan pakai root untuk tugas sehari-hari.</p>
+
+<p>
+  Kenapa pakai group? Karena{" "}
+  <strong>menempelkan policy ke group jauh lebih mudah dikelola</strong>{" "}
+  daripada ke tiap user satu per satu. Kalau ada developer baru, cukup masukkan
+  dia ke group "Developers" — dia otomatis dapat semua izin yang dibutuhkan.
+</p>
+
+<h3>Langkah membuat User & Group (di Console)</h3>
+<Steps>
+  <Step>
+    <b>Buka layanan IAM</b>
+    <p>
+      Cari "IAM" di kotak pencarian AWS Console. IAM adalah{" "}
+      <em>global service</em> — tidak terikat region tertentu.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat Group lebih dulu</b>
+    <p>
+      Menu <code class="ic">User groups → Create group</code>. Beri nama (mis.
+      "Admins"), lalu tempelkan policy seperti{" "}
+      <code class="ic">AdministratorAccess</code>.
+    </p>
+  </Step>
+  <Step>
+    <b>Buat User</b>
+    <p>
+      Menu <code class="ic">Users → Create user</code>. Beri nama, lalu pilih
+      akses: <strong>Console</strong> (login lewat browser) dan/atau{" "}
+      <strong>programmatic</strong> (lewat kode/CLI).
+    </p>
+  </Step>
+  <Step>
+    <b>Masukkan ke Group</b>
+    <p>
+      Saat membuat user, pilih group yang sudah dibuat. User langsung mewarisi
+      semua izin group tersebut.
+    </p>
+  </Step>
+  <Step>
+    <b>Catat Account ID / alias</b>
+    <p>
+      User IAM login lewat URL khusus yang berisi Account ID 12 digit. Anda bisa
+      membuat <em>account alias</em> agar URL-nya lebih mudah diingat.
+    </p>
+  </Step>
+</Steps>
+
+<Box variant="tip" label="💡 Tips">
+<p>Ada dua cara seseorang login: <strong>Root user</strong> login dengan email + password akun. <strong>IAM user</strong> login lewat halaman khusus dengan Account ID + username + password. Pastikan Anda berbagi link login IAM yang benar ke tim Anda.</p>
+</Box>
+</Section>
+
+<Section num="03" id="policies" title="IAM Policies" sub="Anatomi dokumen izin berformat JSON">
+<p>Policy adalah <strong>dokumen JSON</strong> yang berisi daftar izin. Inilah "aturan main" yang menentukan apa yang boleh dan tidak boleh dilakukan sebuah identitas. Memahami strukturnya penting karena Anda akan sering membacanya.</p>
+
+<p>
+  Prinsip kunci: jika user ada di sebuah group, ia <strong>mewarisi</strong>{" "}
+  policy group itu. Ia juga bisa punya <em class="term">inline policy</em> yang
+  menempel langsung ke dirinya saja. Total izin = gabungan semua policy yang
+  berlaku.
+</p>
+
+<h3>Anatomi sebuah policy</h3>
+<Figure>
+  <IAMFig02 />
+  <Fragment slot="caption">
+    Contoh: policy yang <b>mengizinkan</b> tindakan <b>baca objek</b> pada
+    sebuah bucket S3 tertentu.
+  </Fragment>
+</Figure>
+
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Elemen</th>
+        <th>Fungsi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <b>Version</b>
+        </td>
+        <td>
+          Versi bahasa policy. Hampir selalu <code class="ic">2012-10-17</code>.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Id</b>{" "}
+          <span style={{ fontSize: ".85em", opacity: ".7" }}>(opsional)</span>
+        </td>
+        <td>Pengenal untuk policy tersebut.</td>
+      </tr>
+      <tr>
+        <td>
+          <b>Statement</b>
+        </td>
+        <td>Inti dari policy — berisi satu atau lebih aturan izin.</td>
+      </tr>
+      <tr>
+        <td>
+          <b>Effect</b>
+        </td>
+        <td>
+          <code class="ic">Allow</code> (mengizinkan) atau{" "}
+          <code class="ic">Deny</code> (melarang). Deny selalu menang jika
+          bentrok.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Action</b>
+        </td>
+        <td>
+          Daftar tindakan, mis. <code class="ic">s3:GetObject</code>,{" "}
+          <code class="ic">ec2:StartInstances</code>.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Resource</b>
+        </td>
+        <td>
+          Sumber daya yang dikenai aturan, ditulis sebagai <b>ARN</b> (Amazon
+          Resource Name).
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Condition</b>{" "}
+          <span style={{ fontSize: ".85em", opacity: ".7" }}>(opsional)</span>
+        </td>
+        <td>
+          Syarat tambahan kapan aturan berlaku (mis. hanya dari IP tertentu).
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<Box variant="analogy" label="🔑 Analogi">
+  <p>
+    Anggap policy seperti <strong>daftar izin di kartu akses karyawan</strong>:{" "}
+    <em>Effect</em> = boleh/tidak boleh, <em>Action</em> = aktivitas (buka
+    pintu, nyalakan AC), <em>Resource</em> = ruangan mana. "Boleh (Allow)
+    membuka pintu (Action) ruang 3A (Resource)."
+  </p>
+</Box>
+
+<p>AWS sudah menyediakan banyak <em class="term">managed policy</em> bawaan (seperti <code class="ic">AdministratorAccess</code> atau <code class="ic">ReadOnlyAccess</code>) yang bisa langsung dipakai tanpa menulis JSON sendiri. Anda juga bisa menggunakan <strong>Visual Editor</strong> di console untuk membuat policy tanpa mengetik JSON manual.</p>
+</Section>
+
+<Section num="04" id="login" title="Login Bersamaan di Console" sub="Beberapa identitas bisa masuk di waktu yang sama">
+<p>Anda bisa login ke AWS Console dengan <strong>lebih dari satu identitas sekaligus</strong> di satu browser. Caranya menggunakan fitur <em class="term">multi-session</em> bawaan AWS Console, atau cara klasik: pakai <strong>jendela incognito/private</strong> untuk sesi terpisah.</p>
+
+<p>
+  Ini berguna saat Anda ingin, misalnya, membandingkan apa yang dilihat seorang{" "}
+  <strong>admin</strong> versus seorang <strong>user biasa</strong> dengan izin
+  terbatas — tanpa harus logout-login berulang kali. Cara ini sangat membantu
+  ketika sedang menguji apakah policy yang Anda buat sudah benar.
+</p>
+
+<Box variant="tip" label="💡 Praktik">
+<p>Saat belajar policy, login sebagai user terbatas di jendela incognito untuk melihat secara langsung mana yang ter-blokir (muncul pesan <em>"not authorized"</em>) dan mana yang diizinkan. Ini cara tercepat memahami efek sebuah policy.</p>
+</Box>
+</Section>
+
+<Section num="05" id="mfa" title="MFA — Multi-Factor Authentication" sub="Lapisan keamanan kedua selain password">
+<p><strong>MFA</strong> menambahkan lapisan keamanan kedua. Selain <em>sesuatu yang Anda tahu</em> (password), Anda juga butuh <em>sesuatu yang Anda miliki</em> (perangkat MFA, biasanya HP). Jadi meskipun password bocor, penyerang tetap tidak bisa masuk tanpa perangkat Anda.</p>
+
+<Figure>
+  <IAMFig03 />
+  <Fragment slot="caption">
+    Dengan MFA, password yang bocor saja <b>tidak cukup</b> untuk masuk —
+    penyerang juga butuh perangkat fisik Anda.
+  </Fragment>
+</Figure>
+
+<h3>Jenis perangkat MFA di AWS</h3>
+<CardGrid cols={2}>
+  <Card>
+    <h4>
+      <span class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="5" y="2" width="14" height="20" rx="2" />
+          <line x1="12" y1="18" x2="12" y2="18" />
+        </svg>
+      </span>
+      Virtual MFA
+    </h4>
+    <p>
+      Aplikasi di HP seperti Google Authenticator atau Authy. Paling umum &
+      gratis. Bisa untuk banyak akun.
+    </p>
+  </Card>
+  <Card>
+    <h4>
+      <span class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="2" y="7" width="20" height="10" rx="2" />
+          <circle cx="7" cy="12" r="1.5" />
+        </svg>
+      </span>
+      Security Key (FIDO)
+    </h4>
+    <p>
+      Perangkat fisik USB seperti YubiKey. Anda tinggal colok & sentuh untuk
+      verifikasi.
+    </p>
+  </Card>
+  <Card>
+    <h4>
+      <span class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="6" y="3" width="12" height="18" rx="2" />
+          <circle cx="12" cy="17" r="1" />
+        </svg>
+      </span>
+      Hardware TOTP Token
+    </h4>
+    <p>
+      Alat khusus yang menampilkan kode berganti tiap 30 detik (mis. perangkat
+      dari Thales/Gemalto).
+    </p>
+  </Card>
+  <Card>
+    <h4>
+      <span class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" />
+        </svg>
+      </span>
+      Hardware untuk AWS GovCloud
+    </h4>
+    <p>Token fisik khusus untuk lingkungan pemerintah AS (kasus khusus).</p>
+  </Card>
+</CardGrid>
+
+<Box variant="warn" label="⚠️ Penting">
+<p>Yang <strong>paling utama</strong> adalah mengaktifkan MFA pada <strong>Root user</strong> dan akun-akun admin. Ini langkah keamanan nomor satu yang harus Anda lakukan segera setelah membuat akun AWS.</p>
+</Box>
+</Section>
+
+<Section num="06" id="access" title="Access Keys, CLI & SDK" sub="Tiga cara berbeda mengakses AWS">
+<p>Ada tiga jalur untuk berinteraksi dengan AWS. Memahami perbedaannya membantu Anda memilih alat yang tepat:</p>
+
+<Figure>
+  <IAMFig04 />
+  <Fragment slot="caption">
+    <b>Console</b> untuk manusia lewat browser. <b>CLI</b> & <b>SDK</b> untuk
+    otomatisasi, keduanya butuh <b>Access Keys</b>.
+  </Fragment>
+</Figure>
+
+<div class="def">
+  <div class="dterm">AWS CLI (Command Line Interface)</div>
+  <p>
+    Alat untuk mengendalikan AWS lewat perintah teks di terminal. Cocok untuk
+    otomatisasi dan scripting. Open-source.
+  </p>
+</div>
+<div class="def">
+  <div class="dterm">AWS SDK (Software Development Kit)</div>
+  <p>
+    Library untuk memanggil AWS dari dalam kode program Anda (tersedia untuk
+    Python/boto3, JavaScript, Java, Go, dan banyak bahasa lain).
+  </p>
+</div>
+<div class="def">
+  <div class="dterm">Access Keys</div>
+  <p>
+    Sepasang kredensial — <strong>Access Key ID</strong> (seperti username) dan{" "}
+    <strong>Secret Access Key</strong> (seperti password) — yang dipakai CLI dan
+    SDK untuk login. Dibuat di console oleh masing-masing user.
+  </p>
+</div>
+
+<Box variant="warn" label="⚠️ Jangan sampai bocor">
+<p>Access keys adalah <strong>rahasia</strong> — perlakukan seperti password. Jangan pernah membagikannya, jangan menulisnya ke kode yang di-upload ke GitHub, dan jangan menampilkannya di screenshot. Secret access key hanya bisa dilihat <strong>satu kali</strong> saat dibuat.</p>
+</Box>
+</Section>
+
+<Section num="07" id="cli" title="Memasang AWS CLI" sub="Windows, macOS, dan Linux">
+<p>Cara pemasangan sedikit berbeda tiap sistem operasi, tapi <strong>cara konfigurasinya sama</strong>. Setelah terpasang, jalankan <code class="ic">aws --version</code> untuk memastikan berhasil.</p>
+
+<CardGrid cols={3}>
+  <Card>
+    <h4>🪟 Windows</h4>
+    <p>
+      Unduh installer <code class="ic">.msi</code> resmi dari AWS, lalu jalankan
+      seperti aplikasi biasa (klik next-next-finish).
+    </p>
+  </Card>
+  <Card>
+    <h4>🍎 macOS</h4>
+    <p>
+      Unduh paket <code class="ic">.pkg</code> resmi dari AWS dan instal, atau
+      gunakan installer baris perintah.
+    </p>
+  </Card>
+  <Card>
+    <h4>🐧 Linux</h4>
+    <p>
+      Unduh file zip resmi, ekstrak, lalu jalankan skrip{" "}
+      <code class="ic">install</code> yang disertakan.
+    </p>
+  </Card>
+</CardGrid>
+
+<h3>Konfigurasi (sama di semua OS)</h3>
+<p>
+  Setelah CLI terpasang, hubungkan dengan akun Anda menggunakan access keys:
+</p>
+<pre>
+  <span class="c-cmd">aws configure</span>
+  <span class="c-cmt"># lalu masukkan satu per satu:</span>
+  AWS Access Key ID : <span class="c-str">AKIA****************</span>
+  AWS Secret Access Key :{" "}
+  <span class="c-str">****************************************</span>
+  Default region name : <span class="c-str">ap-southeast-1</span>{" "}
+  <span class="c-cmt"># mis. Singapura</span>
+  Default output format : <span class="c-str">json</span>
+</pre>
+
+<h3>Mencoba perintah pertama</h3>
+<pre>
+  <span class="c-cmd">aws iam list-users</span>{" "}
+  <span class="c-cmt"># tampilkan semua IAM user</span>
+  <span class="c-cmd">aws sts get-caller-identity</span>{" "}
+  <span class="c-cmt"># cek "saya login sebagai siapa?"</span>
+</pre>
+
+<Box variant="tip" label="💡 Tips">
+<p>Perintah <code class="ic">aws sts get-caller-identity</code> sangat berguna untuk memastikan CLI Anda benar-benar terhubung dan login sebagai identitas yang Anda kira.</p>
+</Box>
+</Section>
+
+<Section num="08" id="cloudshell" title="AWS CloudShell" sub="Terminal siap pakai langsung di browser">
+<p><strong>CloudShell</strong> adalah terminal berbasis browser yang sudah terpasang AWS CLI dan otomatis login dengan kredensial Anda. <strong>Tidak perlu install</strong> apa pun, tidak perlu set access keys — tinggal klik ikonnya di pojok atas console dan langsung bisa menjalankan perintah AWS.</p>
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>✅ Kelebihan</h4>
+    <p>
+      Tanpa instalasi, kredensial otomatis, punya penyimpanan persisten kecil,
+      bisa upload/download file. Ideal untuk pemula.
+    </p>
+  </Card>
+  <Card>
+    <h4>📍 Catatan</h4>
+    <p>
+      CloudShell tidak tersedia di semua region, dan tetap memakai izin (policy)
+      IAM user/role yang sedang Anda pakai.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="analogy" label="☁️ Analogi">
+<p>Kalau AWS CLI di laptop seperti <strong>membawa peralatan sendiri</strong>, maka CloudShell seperti <strong>menyewa bengkel lengkap</strong> yang sudah ada semua alatnya — Anda tinggal datang dan bekerja.</p>
+</Box>
+</Section>
+
+<Section num="09" id="roles" title="IAM Roles untuk AWS Services" sub="Memberi izin pada layanan, bukan orang">
+<p>Sejauh ini izin kita berikan ke <em>orang</em> (user). Tapi seringkali <strong>layanan AWS</strong> sendiri perlu izin untuk bekerja. Contoh: sebuah server EC2 perlu membaca file dari S3. Server bukan manusia — ia tidak bisa mengetik password atau menyimpan access keys dengan aman.</p>
+
+<p>
+  Solusinya: <em class="term">IAM Role</em>. Role mirip user (punya policy),
+  tapi dirancang untuk <strong>"dipinjam" (assumed) oleh layanan AWS</strong>,
+  bukan dipakai login oleh orang. Kredensialnya bersifat sementara dan dikelola
+  otomatis oleh AWS.
+</p>
+
+<Figure>
+  <IAMFig05 />
+  <Fragment slot="caption">
+    <b>Contoh klasik:</b> EC2 instance memakai IAM Role agar bisa mengakses S3
+    dengan aman.
+  </Fragment>
+</Figure>
+
+<p>
+  Layanan yang umum memakai role antara lain: <strong>EC2 Instances</strong>,{" "}
+  <strong>Lambda Functions</strong>, dan layanan otomasi seperti{" "}
+  <strong>CloudFormation</strong>. Anda membuat role, menentukan layanan apa
+  yang boleh memakainya, lalu menempelkan policy izin yang dibutuhkan.
+</p>
+
+<Box variant="tip" label="💡 Intinya">
+<p><strong>Role = identitas untuk mesin/layanan.</strong> Selalu pilih role daripada menanam access keys di dalam kode atau server — lebih aman karena kredensialnya sementara dan dikelola otomatis.</p>
+</Box>
+</Section>
+
+<Section num="10" id="tools" title="IAM Security Tools" sub="Dua alat untuk audit keamanan">
+<p>IAM punya dua alat bawaan untuk membantu Anda memeriksa kesehatan keamanan akun:</p>
+
+<CardGrid cols={2}>
+  <Card>
+    <h4>
+      <span class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <path d="M14 2v6h6" />
+        </svg>
+      </span>
+      Credentials Report
+    </h4>
+    <p>
+      Laporan tingkat <b>akun</b>. Daftar semua user beserta status
+      kredensialnya: kapan password terakhir diganti, apakah MFA aktif, kapan
+      access key terakhir dipakai. Bisa diunduh sebagai CSV.
+    </p>
+  </Card>
+  <Card>
+    <h4>
+      <span class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.5" y2="16.5" />
+        </svg>
+      </span>
+      Access Advisor
+    </h4>
+    <p>
+      Laporan tingkat <b>user</b>. Menunjukkan layanan apa saja yang punya izin
+      dan <b>kapan terakhir benar-benar diakses</b>. Sangat berguna untuk
+      menemukan dan mencabut izin yang tidak terpakai.
+    </p>
+  </Card>
+</CardGrid>
+
+<Box variant="tip" label="💡 Manfaat">
+<p>Gunakan <strong>Access Advisor</strong> untuk menerapkan prinsip <em>least privilege</em>: kalau ada izin yang tidak pernah dipakai selama berbulan-bulan, kemungkinan besar memang tidak perlu — dan sebaiknya dicabut.</p>
+</Box>
+</Section>
+
+<Section num="11" id="best" title="IAM Best Practices" sub="Aturan emas yang wajib diikuti">
+<CardGrid cols={2}>
+<Card><h4>🚫 Jangan pakai Root</h4><p>Root user hanya untuk setup awal akun. Untuk semua hal lain, gunakan IAM user.</p></Card>
+<Card><h4>👤 Satu user satu orang</h4><p>Jangan berbagi akun. Setiap orang punya IAM user sendiri.</p></Card>
+<Card><h4>👥 Tempel policy ke Group</h4><p>Kelola izin lewat group, bukan ke tiap user satu-satu.</p></Card>
+<Card><h4>🔐 Wajibkan password kuat</h4><p>Terapkan password policy (panjang minimum, kombinasi karakter).</p></Card>
+<Card><h4>📱 Aktifkan MFA</h4><p>Terutama untuk root dan semua akun penting.</p></Card>
+<Card><h4>🎭 Pakai Role untuk layanan</h4><p>Beri izin EC2/Lambda lewat role, bukan access keys.</p></Card>
+<Card><h4>🔑 Jaga Access Keys</h4><p>Jangan share, jangan commit ke repo, rotasi berkala.</p></Card>
+<Card><h4>📊 Audit rutin</h4><p>Gunakan Credentials Report & Access Advisor secara berkala.</p></Card>
+</CardGrid>
+
+<Box variant="analogy" label="🎯 Prinsip utama">
+<p><strong>Least Privilege (hak akses seminimal mungkin).</strong> Beri setiap orang/layanan <em>hanya</em> izin yang benar-benar dibutuhkan untuk tugasnya — tidak lebih. Ini meminimalkan kerusakan jika satu akun disusupi.</p>
+</Box>
+</Section>
+
+<Section num="12" id="shared" title="Shared Responsibility Model" sub="Siapa bertanggung jawab atas apa">
+<p>Keamanan di AWS adalah <strong>tanggung jawab bersama</strong>. AWS mengamankan <em>infrastruktur</em>-nya, sementara Anda bertanggung jawab atas <em>cara Anda menggunakannya</em>. Untuk IAM, pembagiannya jelas:</p>
+
+<Figure>
+  <IAMFig06 />
+  <Fragment slot="caption">
+    AWS mengamankan <b>fondasi IAM</b>; Anda mengamankan{" "}
+    <b>cara mengonfigurasi & menggunakannya</b>.
+  </Fragment>
+</Figure>
+
+<p>Kesimpulan sederhananya: <strong>AWS menyediakan alat keamanan yang andal, tapi memakainya dengan benar adalah tugas Anda.</strong> Kebanyakan insiden keamanan terjadi karena kesalahan konfigurasi di sisi pelanggan — misalnya access key bocor atau policy yang terlalu longgar.</p>
+</Section>
+
+<Section num="13" id="ringkasan" title="Ringkasan" sub="Poin-poin kunci yang harus diingat">
+<div class="recap">
+<h3>🎯 Yang perlu Anda kuasai dari modul IAM</h3>
+<ul>
+<li><b>Users</b> = orang. <b>Groups</b> = kumpulan user. <b>Policies</b> = dokumen JSON berisi izin.</li>
+<li><b>Root user</b> hanya untuk setup awal — jangan dipakai sehari-hari.</li>
+<li>Tempelkan <b>policy ke group</b>, bukan ke tiap user, agar mudah dikelola.</li>
+<li>Aktifkan <b>MFA</b> (lapisan kedua: password + perangkat) terutama untuk root.</li>
+<li>Tiga cara akses AWS: <b>Console</b> (browser), <b>CLI</b> (terminal), <b>SDK</b> (kode). CLI & SDK butuh <b>Access Keys</b> — jaga kerahasiaannya.</li>
+<li><b>CloudShell</b> = terminal siap pakai di browser, tanpa instalasi & konfigurasi.</li>
+<li><b>IAM Roles</b> memberi izin pada <b>layanan</b> (EC2, Lambda) — bukan orang.</li>
+<li>Audit dengan <b>Credentials Report</b> (level akun) & <b>Access Advisor</b> (level user).</li>
+<li>Pegang prinsip <b>least privilege</b> — beri izin seminimal yang dibutuhkan.</li>
+<li><b>Shared Responsibility:</b> AWS amankan infrastruktur, Anda amankan konfigurasi & penggunaan.</li>
+</ul>
+</div>
+
+<Box variant="tip" label="▶️ Langkah selanjutnya">
+<p>Setelah memahami IAM, lanjutkan ke modul <strong>EC2</strong> (server virtual) — di sana Anda akan langsung mempraktikkan IAM Roles untuk pertama kalinya. IAM adalah fondasi yang akan terus Anda pakai di semua layanan AWS lainnya.</p>
+</Box>
+</Section>

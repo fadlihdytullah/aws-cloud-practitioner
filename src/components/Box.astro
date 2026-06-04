@@ -1,0 +1,14 @@
+---
+// Callout box. variant: tip | analogy | warn | exam (atau lainnya yang ada di globals.css).
+// icon opsional dirender sebagai chip .b-icon (gaya EC2); tanpa icon, label tampil polos (gaya IAM).
+interface Props {
+  variant: string;
+  label: string;
+  icon?: string;
+}
+const { variant, label, icon } = Astro.props;
+---
+<div class={`box ${variant}`}>
+  <div class="box-tag">{icon && <span class="b-icon">{icon}</span>}<span set:html={label} /></div>
+  <slot />
+</div>

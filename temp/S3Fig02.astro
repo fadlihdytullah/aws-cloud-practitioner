@@ -1,0 +1,31 @@
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="arrow-s3-02" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect x="42" y="48" width="150" height="75" rx="14" fill="#232f3e" />
+  <text x="117" y="82" text-anchor="middle" font-size="15" fill="#ff9d4d" font-weight="700">User atau Role</text>
+  <text x="117" y="103" text-anchor="middle" font-size="11" fill="#ffffff">Identitas AWS</text>
+  <line x1="192" y1="86" x2="260" y2="86" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-s3-02)" />
+  <rect x="260" y="48" width="150" height="75" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+  <text x="335" y="82" text-anchor="middle" font-size="15" fill="#232f3e" font-weight="700">IAM Policy</text>
+  <text x="335" y="103" text-anchor="middle" font-size="11" fill="#42505e">Izin identitas</text>
+  <line x1="410" y1="86" x2="478" y2="86" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-s3-02)" />
+  <rect x="478" y="48" width="220" height="75" rx="14" fill="#ec7211" />
+  <text x="588" y="82" text-anchor="middle" font-size="15" fill="#ffffff" font-weight="700">S3 Bucket dan Object</text>
+  <text x="588" y="103" text-anchor="middle" font-size="11" fill="#ffffff">Resource tujuan</text>
+  <rect x="104" y="192" width="160" height="82" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+  <text x="184" y="225" text-anchor="middle" font-size="15" fill="#232f3e" font-weight="700">Bucket Policy</text>
+  <text x="184" y="248" text-anchor="middle" font-size="11" fill="#42505e">Izin dari sisi resource</text>
+  <rect x="300" y="192" width="160" height="82" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+  <text x="380" y="225" text-anchor="middle" font-size="15" fill="#232f3e" font-weight="700">Block Public</text>
+  <text x="380" y="248" text-anchor="middle" font-size="11" fill="#42505e">Guardrail publik</text>
+  <rect x="496" y="192" width="160" height="82" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+  <text x="576" y="225" text-anchor="middle" font-size="15" fill="#232f3e" font-weight="700">Encryption</text>
+  <text x="576" y="248" text-anchor="middle" font-size="11" fill="#42505e">SSE-S3 atau KMS</text>
+  <line x1="548" y1="123" x2="225" y2="192" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-s3-02)" />
+  <line x1="588" y1="123" x2="405" y2="192" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-s3-02)" />
+  <line x1="628" y1="123" x2="555" y2="192" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-s3-02)" />
+  <text x="380" y="324" text-anchor="middle" font-size="13" fill="#42505e">Akses disetujui hanya jika policy dan guardrail mengizinkan.</text>
+</svg>

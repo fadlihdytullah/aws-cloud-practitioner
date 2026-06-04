@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS IAM — Panduan Fundamental untuk Pemula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="globals.css">
+<script>
+(function(){try{var r=document.documentElement;var t=localStorage.getItem('reader-theme');r.setAttribute('data-theme',t||'light');var s=localStorage.getItem('reader-scale');if(s)r.style.setProperty('--scale',s);}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo-badge">IAM</div>
+    <div class="topbar-title">AWS IAM<span>Fundamental AWS untuk Pemula</span></div>
+    <div class="topbar-actions">
+      <div class="rc-group" role="group" aria-label="Ukuran teks">
+        <button type="button" class="rc-btn" data-font="dec" aria-label="Perkecil ukuran teks">A<span class="rc-minus">−</span></button>
+        <span class="rc-sep"></span>
+        <button type="button" class="rc-btn" data-font="inc" aria-label="Perbesar ukuran teks">A<span class="rc-plus">+</span></button>
+      </div>
+      <button type="button" class="rc-btn rc-theme" data-theme-toggle aria-label="Ganti tema baca">
+        <span class="ti" aria-hidden="true">☀️</span>
+      </button>
+      <a class="topbar-link" href="#ringkasan">Ringkasan</a>
+    </div>
+  </div>
+</div>
+
+<div class="page-shell">
+
+<nav class="toc">
+  <div class="toc-label">Daftar Isi</div>
+  <a href="#intro"><span class="num">01</span>Apa itu IAM?</a>
+  <a href="#users"><span class="num">02</span>Users & Groups</a>
+  <a href="#policies"><span class="num">03</span>Policies</a>
+  <a href="#login"><span class="num">04</span>Login Bersamaan</a>
+  <a href="#mfa"><span class="num">05</span>MFA</a>
+  <a href="#access"><span class="num">06</span>Access Key, CLI & SDK</a>
+  <a href="#cli"><span class="num">07</span>Setup AWS CLI</a>
+  <a href="#cloudshell"><span class="num">08</span>CloudShell</a>
+  <a href="#roles"><span class="num">09</span>IAM Roles</a>
+  <a href="#tools"><span class="num">10</span>Security Tools</a>
+  <a href="#best"><span class="num">11</span>Best Practices</a>
+  <a href="#shared"><span class="num">12</span>Shared Responsibility</a>
+  <a href="#ringkasan"><span class="num">13</span>Ringkasan</a>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">Modul · Identity and Access Management</div>
+  <h1>Mengelola <em>siapa</em> boleh mengakses <em>apa</em> di AWS</h1>
+  <p>IAM adalah fondasi keamanan AWS. Sebelum membuat server, database, atau apa pun, Anda perlu paham cara mengatur identitas dan izin. Panduan ini membahasnya dari nol — dengan bahasa sederhana dan visual.</p>
+  <div class="hero-meta">
+    <span class="chip">⏱ ~45 menit baca</span>
+    <span class="chip">🎯 Level <b>Pemula</b></span>
+    <span class="chip">🆓 Gratis · <b>Global Service</b></span>
+  </div>
+</div>
+
+<!-- 01 INTRO -->
+<section id="intro">
+  <div class="sec-head"><div class="sec-num">01</div><h2>Apa itu IAM?</h2></div>
+  <p class="sec-sub">Identity and Access Management — Users, Groups, dan Policies</p>
+
+  <p><strong>IAM (Identity and Access Management)</strong> adalah layanan AWS untuk mengatur <em class="term">identitas</em> (siapa) dan <em class="term">izin akses</em> (boleh melakukan apa) di dalam akun AWS Anda. Singkatnya: IAM menentukan <strong>siapa boleh masuk</strong> dan <strong>apa yang boleh mereka lakukan</strong>.</p>
+
+  <p>Saat pertama membuat akun AWS, Anda mendapat satu identitas super-kuat bernama <em class="term">Root User</em>. Root bisa melakukan <em>segalanya</em> tanpa batas — dan justru karena itu sangat berbahaya jika sampai jatuh ke tangan yang salah. Karena itu, root sebaiknya hampir tidak pernah dipakai untuk pekerjaan harian.</p>
+
+  <div class="box analogy">
+    <span class="box-tag">🏢 Analogi</span>
+    <p>Bayangkan akun AWS Anda adalah sebuah <strong>gedung kantor</strong>. <strong>Root user</strong> adalah pemilik gedung yang punya kunci master ke semua ruangan — sangat berbahaya kalau hilang. <strong>IAM Users</strong> adalah karyawan dengan kartu akses masing-masing. <strong>Groups</strong> adalah divisi (Finance, Developer, HR). <strong>Policies</strong> adalah aturan tertulis: "Divisi Finance boleh masuk ruang brankas, tapi tidak boleh masuk ruang server."</p>
+  </div>
+
+  <p>Tiga konsep inti yang akan kita pakai berulang kali:</p>
+  <div class="def">
+    <div class="dterm">User</div>
+    <p>Satu identitas untuk satu orang nyata (misalnya: Andi, Budi). Setiap orang sebaiknya punya user IAM sendiri.</p>
+  </div>
+  <div class="def">
+    <div class="dterm">Group</div>
+    <p>Kumpulan user. Group <strong>hanya bisa berisi user</strong> — tidak bisa berisi group lain. Satu user bisa masuk ke beberapa group, atau tidak masuk group sama sekali.</p>
+  </div>
+  <div class="def">
+    <div class="dterm">Policy</div>
+    <p>Dokumen (format JSON) yang mendefinisikan izin: layanan apa yang boleh/tidak boleh diakses dan tindakan apa yang boleh dilakukan. Policy bisa ditempel ke User maupun Group.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" font-family="Sora,sans-serif">
+      <!-- account boundary -->
+      <rect x="20" y="20" width="720" height="380" rx="18" fill="none" stroke="#e8e0d4" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="40" y="46" font-size="13" font-weight="600" fill="#4a5765">AKUN AWS ANDA</text>
+      <!-- root -->
+      <g>
+        <rect x="560" y="60" width="150" height="56" rx="11" fill="#fdeceb" stroke="#c0392b" stroke-width="1.5"/>
+        <circle cx="588" cy="88" r="13" fill="#c0392b"/>
+        <text x="588" y="93" font-size="14" fill="#fff" text-anchor="middle">👑</text>
+        <text x="610" y="84" font-size="13" font-weight="700" fill="#c0392b">Root User</text>
+        <text x="610" y="100" font-size="10.5" fill="#a5392b">akses penuh</text>
+      </g>
+      <!-- groups -->
+      <g>
+        <rect x="60" y="150" width="180" height="100" rx="13" fill="#fdf4e3" stroke="#ec7211" stroke-width="1.5"/>
+        <text x="78" y="176" font-size="12" font-weight="700" fill="#ec7211">GROUP · Developers</text>
+        <!-- policy tag -->
+        <rect x="78" y="188" width="144" height="22" rx="6" fill="#fff" stroke="#ec7211" stroke-width="1"/>
+        <text x="150" y="203" font-size="10.5" fill="#ec7211" text-anchor="middle">📄 Policy: akses EC2 + S3</text>
+        <!-- users -->
+        <g><circle cx="98" cy="230" r="12" fill="#31465f"/><text x="98" y="234" font-size="11" fill="#fff" text-anchor="middle">A</text><text x="98" y="252" font-size="9.5" fill="#4a5765" text-anchor="middle">Andi</text></g>
+        <g><circle cx="150" cy="230" r="12" fill="#31465f"/><text x="150" y="234" font-size="11" fill="#fff" text-anchor="middle">B</text><text x="150" y="252" font-size="9.5" fill="#4a5765" text-anchor="middle">Budi</text></g>
+      </g>
+      <g>
+        <rect x="290" y="150" width="180" height="100" rx="13" fill="#e3f3f0" stroke="#0a8f7a" stroke-width="1.5"/>
+        <text x="308" y="176" font-size="12" font-weight="700" fill="#0a8f7a">GROUP · Finance</text>
+        <rect x="308" y="188" width="144" height="22" rx="6" fill="#fff" stroke="#0a8f7a" stroke-width="1"/>
+        <text x="380" y="203" font-size="10.5" fill="#0a8f7a" text-anchor="middle">📄 Policy: read billing</text>
+        <g><circle cx="328" cy="230" r="12" fill="#31465f"/><text x="328" y="234" font-size="11" fill="#fff" text-anchor="middle">C</text><text x="328" y="252" font-size="9.5" fill="#4a5765" text-anchor="middle">Citra</text></g>
+      </g>
+      <!-- standalone user -->
+      <g>
+        <rect x="540" y="150" width="170" height="100" rx="13" fill="#f7f3ec" stroke="#9aa6b2" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="558" y="176" font-size="11.5" font-weight="600" fill="#4a5765">USER tanpa group</text>
+        <g><circle cx="580" cy="216" r="14" fill="#31465f"/><text x="580" y="221" font-size="12" fill="#fff" text-anchor="middle">D</text><text x="580" y="240" font-size="10" fill="#4a5765" text-anchor="middle">Dewi</text></g>
+        <rect x="610" y="200" width="88" height="22" rx="6" fill="#fff" stroke="#9aa6b2" stroke-width="1"/>
+        <text x="654" y="215" font-size="9.5" fill="#4a5765" text-anchor="middle">📄 inline policy</text>
+      </g>
+      <!-- caption arrows -->
+      <text x="380" y="310" font-size="13" fill="#1c2530" text-anchor="middle" font-weight="600">Policy bisa ditempel ke GROUP (untuk semua anggota) atau langsung ke USER</text>
+      <text x="380" y="335" font-size="11.5" fill="#4a5765" text-anchor="middle">Group hanya boleh berisi user · satu user boleh ada di banyak group</text>
+    </svg>
+    <figcaption><b>Struktur dasar IAM:</b> Root di atas, lalu Users dikelompokkan ke dalam Groups, dengan Policies yang menentukan izin.</figcaption>
+  </figure>
+</section>
+
+<!-- 02 USERS & GROUPS -->
+<section id="users">
+  <div class="sec-head"><div class="sec-num">02</div><h2>IAM Users & Groups</h2></div>
+  <p class="sec-sub">Membuat identitas untuk setiap orang dan mengelompokkannya</p>
+
+  <p>Praktik yang benar: <strong>buat satu IAM user untuk setiap orang</strong>, lalu masukkan ke group sesuai perannya. Jangan pernah berbagi satu user untuk banyak orang, dan jangan pakai root untuk tugas sehari-hari.</p>
+
+  <p>Kenapa pakai group? Karena <strong>menempelkan policy ke group jauh lebih mudah dikelola</strong> daripada ke tiap user satu per satu. Kalau ada developer baru, cukup masukkan dia ke group "Developers" — dia otomatis dapat semua izin yang dibutuhkan.</p>
+
+  <h3>Langkah membuat User & Group (di Console)</h3>
+  <div class="steps">
+    <div class="step"><div class="sn"></div><div class="st"><b>Buka layanan IAM</b><p>Cari "IAM" di kotak pencarian AWS Console. IAM adalah <em>global service</em> — tidak terikat region tertentu.</p></div></div>
+    <div class="step"><div class="sn"></div><div class="st"><b>Buat Group lebih dulu</b><p>Menu <code class="ic">User groups → Create group</code>. Beri nama (mis. "Admins"), lalu tempelkan policy seperti <code class="ic">AdministratorAccess</code>.</p></div></div>
+    <div class="step"><div class="sn"></div><div class="st"><b>Buat User</b><p>Menu <code class="ic">Users → Create user</code>. Beri nama, lalu pilih akses: <strong>Console</strong> (login lewat browser) dan/atau <strong>programmatic</strong> (lewat kode/CLI).</p></div></div>
+    <div class="step"><div class="sn"></div><div class="st"><b>Masukkan ke Group</b><p>Saat membuat user, pilih group yang sudah dibuat. User langsung mewarisi semua izin group tersebut.</p></div></div>
+    <div class="step"><div class="sn"></div><div class="st"><b>Catat Account ID / alias</b><p>User IAM login lewat URL khusus yang berisi Account ID 12 digit. Anda bisa membuat <em>account alias</em> agar URL-nya lebih mudah diingat.</p></div></div>
+  </div>
+
+  <div class="box tip">
+    <span class="box-tag">💡 Tips</span>
+    <p>Ada dua cara seseorang login: <strong>Root user</strong> login dengan email + password akun. <strong>IAM user</strong> login lewat halaman khusus dengan Account ID + username + password. Pastikan Anda berbagi link login IAM yang benar ke tim Anda.</p>
+  </div>
+</section>
+
+<!-- 03 POLICIES -->
+<section id="policies">
+  <div class="sec-head"><div class="sec-num">03</div><h2>IAM Policies</h2></div>
+  <p class="sec-sub">Anatomi dokumen izin berformat JSON</p>
+
+  <p>Policy adalah <strong>dokumen JSON</strong> yang berisi daftar izin. Inilah "aturan main" yang menentukan apa yang boleh dan tidak boleh dilakukan sebuah identitas. Memahami strukturnya penting karena Anda akan sering membacanya.</p>
+
+  <p>Prinsip kunci: jika user ada di sebuah group, ia <strong>mewarisi</strong> policy group itu. Ia juga bisa punya <em class="term">inline policy</em> yang menempel langsung ke dirinya saja. Total izin = gabungan semua policy yang berlaku.</p>
+
+  <h3>Anatomi sebuah policy</h3>
+  <figure>
+    <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" font-family="Sora,sans-serif">
+      <rect x="20" y="20" width="720" height="260" rx="14" fill="#1c2530"/>
+      <text x="45" y="55" font-family="JetBrains Mono,monospace" font-size="14" fill="#7d8a99">{</text>
+      <text x="65" y="80" font-family="JetBrains Mono,monospace" font-size="14"><tspan fill="#ff9d5c">"Version"</tspan><tspan fill="#e6e9ed">: </tspan><tspan fill="#7ee0c8">"2012-10-17"</tspan><tspan fill="#e6e9ed">,</tspan></text>
+      <text x="65" y="105" font-family="JetBrains Mono,monospace" font-size="14"><tspan fill="#ff9d5c">"Statement"</tspan><tspan fill="#e6e9ed">: [{</tspan></text>
+      <text x="85" y="130" font-family="JetBrains Mono,monospace" font-size="14"><tspan fill="#ff9d5c">"Effect"</tspan><tspan fill="#e6e9ed">: </tspan><tspan fill="#7ee0c8">"Allow"</tspan><tspan fill="#e6e9ed">,</tspan></text>
+      <text x="85" y="155" font-family="JetBrains Mono,monospace" font-size="14"><tspan fill="#ff9d5c">"Action"</tspan><tspan fill="#e6e9ed">: [</tspan><tspan fill="#7ee0c8">"s3:GetObject"</tspan><tspan fill="#e6e9ed">],</tspan></text>
+      <text x="85" y="180" font-family="JetBrains Mono,monospace" font-size="14"><tspan fill="#ff9d5c">"Resource"</tspan><tspan fill="#e6e9ed">: </tspan><tspan fill="#7ee0c8">"arn:aws:s3:::bucket/*"</tspan></text>
+      <text x="65" y="205" font-family="JetBrains Mono,monospace" font-size="14" fill="#e6e9ed">}]</text>
+      <text x="45" y="230" font-family="JetBrains Mono,monospace" font-size="14" fill="#7d8a99">}</text>
+      <!-- annotations -->
+      <line x1="350" y1="74" x2="500" y2="74" stroke="#ec7211" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="510" y="78" font-size="11.5" fill="#ffd9a0">versi bahasa policy</text>
+      <line x1="280" y1="124" x2="500" y2="124" stroke="#ec7211" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="510" y="128" font-size="11.5" fill="#ffd9a0">Allow / Deny</text>
+      <line x1="350" y1="149" x2="500" y2="149" stroke="#ec7211" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="510" y="153" font-size="11.5" fill="#ffd9a0">tindakan yang diatur</text>
+      <line x1="430" y1="174" x2="500" y2="174" stroke="#ec7211" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="510" y="178" font-size="11.5" fill="#ffd9a0">objek yang dikenai (ARN)</text>
+    </svg>
+    <figcaption>Contoh: policy yang <b>mengizinkan</b> tindakan <b>baca objek</b> pada sebuah bucket S3 tertentu.</figcaption>
+  </figure>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Elemen</th><th>Fungsi</th></tr></thead>
+      <tbody>
+        <tr><td><b>Version</b></td><td>Versi bahasa policy. Hampir selalu <code class="ic">2012-10-17</code>.</td></tr>
+        <tr><td><b>Id</b> <span style="font-size:.85em;opacity:.7">(opsional)</span></td><td>Pengenal untuk policy tersebut.</td></tr>
+        <tr><td><b>Statement</b></td><td>Inti dari policy — berisi satu atau lebih aturan izin.</td></tr>
+        <tr><td><b>Effect</b></td><td><code class="ic">Allow</code> (mengizinkan) atau <code class="ic">Deny</code> (melarang). Deny selalu menang jika bentrok.</td></tr>
+        <tr><td><b>Action</b></td><td>Daftar tindakan, mis. <code class="ic">s3:GetObject</code>, <code class="ic">ec2:StartInstances</code>.</td></tr>
+        <tr><td><b>Resource</b></td><td>Sumber daya yang dikenai aturan, ditulis sebagai <b>ARN</b> (Amazon Resource Name).</td></tr>
+        <tr><td><b>Condition</b> <span style="font-size:.85em;opacity:.7">(opsional)</span></td><td>Syarat tambahan kapan aturan berlaku (mis. hanya dari IP tertentu).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box analogy">
+    <span class="box-tag">🔑 Analogi</span>
+    <p>Anggap policy seperti <strong>daftar izin di kartu akses karyawan</strong>: <em>Effect</em> = boleh/tidak boleh, <em>Action</em> = aktivitas (buka pintu, nyalakan AC), <em>Resource</em> = ruangan mana. "Boleh (Allow) membuka pintu (Action) ruang 3A (Resource)."</p>
+  </div>
+
+  <p>AWS sudah menyediakan banyak <em class="term">managed policy</em> bawaan (seperti <code class="ic">AdministratorAccess</code> atau <code class="ic">ReadOnlyAccess</code>) yang bisa langsung dipakai tanpa menulis JSON sendiri. Anda juga bisa menggunakan <strong>Visual Editor</strong> di console untuk membuat policy tanpa mengetik JSON manual.</p>
+</section>
+
+<!-- 04 SIMULTANEOUS LOGIN -->
+<section id="login">
+  <div class="sec-head"><div class="sec-num">04</div><h2>Login Bersamaan di Console</h2></div>
+  <p class="sec-sub">Beberapa identitas bisa masuk di waktu yang sama</p>
+
+  <p>Anda bisa login ke AWS Console dengan <strong>lebih dari satu identitas sekaligus</strong> di satu browser. Caranya menggunakan fitur <em class="term">multi-session</em> bawaan AWS Console, atau cara klasik: pakai <strong>jendela incognito/private</strong> untuk sesi terpisah.</p>
+
+  <p>Ini berguna saat Anda ingin, misalnya, membandingkan apa yang dilihat seorang <strong>admin</strong> versus seorang <strong>user biasa</strong> dengan izin terbatas — tanpa harus logout-login berulang kali. Cara ini sangat membantu ketika sedang menguji apakah policy yang Anda buat sudah benar.</p>
+
+  <div class="box tip">
+    <span class="box-tag">💡 Praktik</span>
+    <p>Saat belajar policy, login sebagai user terbatas di jendela incognito untuk melihat secara langsung mana yang ter-blokir (muncul pesan <em>"not authorized"</em>) dan mana yang diizinkan. Ini cara tercepat memahami efek sebuah policy.</p>
+  </div>
+</section>
+
+<!-- 05 MFA -->
+<section id="mfa">
+  <div class="sec-head"><div class="sec-num">05</div><h2>MFA — Multi-Factor Authentication</h2></div>
+  <p class="sec-sub">Lapisan keamanan kedua selain password</p>
+
+  <p><strong>MFA</strong> menambahkan lapisan keamanan kedua. Selain <em>sesuatu yang Anda tahu</em> (password), Anda juga butuh <em>sesuatu yang Anda miliki</em> (perangkat MFA, biasanya HP). Jadi meskipun password bocor, penyerang tetap tidak bisa masuk tanpa perangkat Anda.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="Sora,sans-serif">
+      <!-- factor 1 -->
+      <g>
+        <rect x="40" y="70" width="180" height="110" rx="14" fill="#fdf4e3" stroke="#ec7211" stroke-width="1.5"/>
+        <text x="130" y="105" font-size="34" text-anchor="middle">🔑</text>
+        <text x="130" y="135" font-size="14" font-weight="700" fill="#1c2530" text-anchor="middle">Faktor 1</text>
+        <text x="130" y="156" font-size="12" fill="#4a5765" text-anchor="middle">Password</text>
+        <text x="130" y="171" font-size="10" fill="#9aa6b2" text-anchor="middle">sesuatu yang Anda TAHU</text>
+      </g>
+      <text x="265" y="135" font-size="40" fill="#ec7211" text-anchor="middle" font-weight="300">+</text>
+      <!-- factor 2 -->
+      <g>
+        <rect x="310" y="70" width="180" height="110" rx="14" fill="#e3f3f0" stroke="#0a8f7a" stroke-width="1.5"/>
+        <text x="400" y="105" font-size="34" text-anchor="middle">📱</text>
+        <text x="400" y="135" font-size="14" font-weight="700" fill="#1c2530" text-anchor="middle">Faktor 2</text>
+        <text x="400" y="156" font-size="12" fill="#4a5765" text-anchor="middle">Kode MFA (6 digit)</text>
+        <text x="400" y="171" font-size="10" fill="#9aa6b2" text-anchor="middle">sesuatu yang Anda MILIKI</text>
+      </g>
+      <text x="535" y="135" font-size="34" fill="#0a8f7a" text-anchor="middle" font-weight="300">=</text>
+      <!-- result -->
+      <g>
+        <rect x="580" y="70" width="150" height="110" rx="14" fill="#1c2530"/>
+        <text x="655" y="108" font-size="32" text-anchor="middle">✅</text>
+        <text x="655" y="140" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">Akses Aman</text>
+        <text x="655" y="160" font-size="10" fill="#9aa6b2" text-anchor="middle">login berhasil</text>
+      </g>
+    </svg>
+    <figcaption>Dengan MFA, password yang bocor saja <b>tidak cukup</b> untuk masuk — penyerang juga butuh perangkat fisik Anda.</figcaption>
+  </figure>
+
+  <h3>Jenis perangkat MFA di AWS</h3>
+  <div class="grid grid-2">
+    <div class="card"><h4><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>Virtual MFA</h4><p>Aplikasi di HP seperti Google Authenticator atau Authy. Paling umum & gratis. Bisa untuk banyak akun.</p></div>
+    <div class="card"><h4><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="2"/><circle cx="7" cy="12" r="1.5"/></svg></span>Security Key (FIDO)</h4><p>Perangkat fisik USB seperti YubiKey. Anda tinggal colok & sentuh untuk verifikasi.</p></div>
+    <div class="card"><h4><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><circle cx="12" cy="17" r="1"/></svg></span>Hardware TOTP Token</h4><p>Alat khusus yang menampilkan kode berganti tiap 30 detik (mis. perangkat dari Thales/Gemalto).</p></div>
+    <div class="card"><h4><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg></span>Hardware untuk AWS GovCloud</h4><p>Token fisik khusus untuk lingkungan pemerintah AS (kasus khusus).</p></div>
+  </div>
+
+  <div class="box warn">
+    <span class="box-tag">⚠️ Penting</span>
+    <p>Yang <strong>paling utama</strong> adalah mengaktifkan MFA pada <strong>Root user</strong> dan akun-akun admin. Ini langkah keamanan nomor satu yang harus Anda lakukan segera setelah membuat akun AWS.</p>
+  </div>
+</section>
+
+<!-- 06 ACCESS KEYS CLI SDK -->
+<section id="access">
+  <div class="sec-head"><div class="sec-num">06</div><h2>Access Keys, CLI & SDK</h2></div>
+  <p class="sec-sub">Tiga cara berbeda mengakses AWS</p>
+
+  <p>Ada tiga jalur untuk berinteraksi dengan AWS. Memahami perbedaannya membantu Anda memilih alat yang tepat:</p>
+
+  <figure>
+    <svg viewBox="0 0 760 230" xmlns="http://www.w3.org/2000/svg" font-family="Sora,sans-serif">
+      <g>
+        <rect x="40" y="40" width="210" height="150" rx="14" fill="#fff" stroke="#e8e0d4" stroke-width="1.5"/>
+        <text x="145" y="85" font-size="38" text-anchor="middle">🖥️</text>
+        <text x="145" y="120" font-size="16" font-weight="700" fill="#1c2530" text-anchor="middle">Console</text>
+        <text x="145" y="142" font-size="12" fill="#4a5765" text-anchor="middle">Lewat browser</text>
+        <text x="145" y="160" font-size="11" fill="#9aa6b2" text-anchor="middle">login: user + password</text>
+        <text x="145" y="175" font-size="11" fill="#9aa6b2" text-anchor="middle">(+ MFA)</text>
+      </g>
+      <g>
+        <rect x="275" y="40" width="210" height="150" rx="14" fill="#1c2530"/>
+        <text x="380" y="85" font-size="38" text-anchor="middle">⌨️</text>
+        <text x="380" y="120" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">CLI</text>
+        <text x="380" y="142" font-size="12" fill="#c8d0d9" text-anchor="middle">Lewat terminal</text>
+        <text x="380" y="160" font-size="11" fill="#9aa6b2" text-anchor="middle">pakai: access keys</text>
+        <text x="380" y="175" font-size="11" fill="#9aa6b2" text-anchor="middle">otomatisasi & scripting</text>
+      </g>
+      <g>
+        <rect x="510" y="40" width="210" height="150" rx="14" fill="#fdf4e3" stroke="#ec7211" stroke-width="1.5"/>
+        <text x="615" y="85" font-size="38" text-anchor="middle">🧩</text>
+        <text x="615" y="120" font-size="16" font-weight="700" fill="#ec7211" text-anchor="middle">SDK</text>
+        <text x="615" y="142" font-size="12" fill="#4a5765" text-anchor="middle">Lewat kode aplikasi</text>
+        <text x="615" y="160" font-size="11" fill="#9aa6b2" text-anchor="middle">pakai: access keys</text>
+        <text x="615" y="175" font-size="11" fill="#9aa6b2" text-anchor="middle">Python, JS, Java, dll</text>
+      </g>
+    </svg>
+    <figcaption><b>Console</b> untuk manusia lewat browser. <b>CLI</b> & <b>SDK</b> untuk otomatisasi, keduanya butuh <b>Access Keys</b>.</figcaption>
+  </figure>
+
+  <div class="def">
+    <div class="dterm">AWS CLI (Command Line Interface)</div>
+    <p>Alat untuk mengendalikan AWS lewat perintah teks di terminal. Cocok untuk otomatisasi dan scripting. Open-source.</p>
+  </div>
+  <div class="def">
+    <div class="dterm">AWS SDK (Software Development Kit)</div>
+    <p>Library untuk memanggil AWS dari dalam kode program Anda (tersedia untuk Python/boto3, JavaScript, Java, Go, dan banyak bahasa lain).</p>
+  </div>
+  <div class="def">
+    <div class="dterm">Access Keys</div>
+    <p>Sepasang kredensial — <strong>Access Key ID</strong> (seperti username) dan <strong>Secret Access Key</strong> (seperti password) — yang dipakai CLI dan SDK untuk login. Dibuat di console oleh masing-masing user.</p>
+  </div>
+
+  <div class="box warn">
+    <span class="box-tag">⚠️ Jangan sampai bocor</span>
+    <p>Access keys adalah <strong>rahasia</strong> — perlakukan seperti password. Jangan pernah membagikannya, jangan menulisnya ke kode yang di-upload ke GitHub, dan jangan menampilkannya di screenshot. Secret access key hanya bisa dilihat <strong>satu kali</strong> saat dibuat.</p>
+  </div>
+</section>
+
+<!-- 07 CLI SETUP -->
+<section id="cli">
+  <div class="sec-head"><div class="sec-num">07</div><h2>Memasang AWS CLI</h2></div>
+  <p class="sec-sub">Windows, macOS, dan Linux</p>
+
+  <p>Cara pemasangan sedikit berbeda tiap sistem operasi, tapi <strong>cara konfigurasinya sama</strong>. Setelah terpasang, jalankan <code class="ic">aws --version</code> untuk memastikan berhasil.</p>
+
+  <div class="grid grid-3">
+    <div class="card"><h4>🪟 Windows</h4><p>Unduh installer <code class="ic">.msi</code> resmi dari AWS, lalu jalankan seperti aplikasi biasa (klik next-next-finish).</p></div>
+    <div class="card"><h4>🍎 macOS</h4><p>Unduh paket <code class="ic">.pkg</code> resmi dari AWS dan instal, atau gunakan installer baris perintah.</p></div>
+    <div class="card"><h4>🐧 Linux</h4><p>Unduh file zip resmi, ekstrak, lalu jalankan skrip <code class="ic">install</code> yang disertakan.</p></div>
+  </div>
+
+  <h3>Konfigurasi (sama di semua OS)</h3>
+  <p>Setelah CLI terpasang, hubungkan dengan akun Anda menggunakan access keys:</p>
+  <pre><span class="c-cmd">aws configure</span>
+<span class="c-cmt"># lalu masukkan satu per satu:</span>
+AWS Access Key ID     : <span class="c-str">AKIA****************</span>
+AWS Secret Access Key : <span class="c-str">****************************************</span>
+Default region name   : <span class="c-str">ap-southeast-1</span>   <span class="c-cmt"># mis. Singapura</span>
+Default output format : <span class="c-str">json</span></pre>
+
+  <h3>Mencoba perintah pertama</h3>
+  <pre><span class="c-cmd">aws iam list-users</span>          <span class="c-cmt"># tampilkan semua IAM user</span>
+<span class="c-cmd">aws sts get-caller-identity</span>  <span class="c-cmt"># cek "saya login sebagai siapa?"</span></pre>
+
+  <div class="box tip">
+    <span class="box-tag">💡 Tips</span>
+    <p>Perintah <code class="ic">aws sts get-caller-identity</code> sangat berguna untuk memastikan CLI Anda benar-benar terhubung dan login sebagai identitas yang Anda kira.</p>
+  </div>
+</section>
+
+<!-- 08 CLOUDSHELL -->
+<section id="cloudshell">
+  <div class="sec-head"><div class="sec-num">08</div><h2>AWS CloudShell</h2></div>
+  <p class="sec-sub">Terminal siap pakai langsung di browser</p>
+
+  <p><strong>CloudShell</strong> adalah terminal berbasis browser yang sudah terpasang AWS CLI dan otomatis login dengan kredensial Anda. <strong>Tidak perlu install</strong> apa pun, tidak perlu set access keys — tinggal klik ikonnya di pojok atas console dan langsung bisa menjalankan perintah AWS.</p>
+
+  <div class="grid grid-2">
+    <div class="card"><h4>✅ Kelebihan</h4><p>Tanpa instalasi, kredensial otomatis, punya penyimpanan persisten kecil, bisa upload/download file. Ideal untuk pemula.</p></div>
+    <div class="card"><h4>📍 Catatan</h4><p>CloudShell tidak tersedia di semua region, dan tetap memakai izin (policy) IAM user/role yang sedang Anda pakai.</p></div>
+  </div>
+
+  <div class="box analogy">
+    <span class="box-tag">☁️ Analogi</span>
+    <p>Kalau AWS CLI di laptop seperti <strong>membawa peralatan sendiri</strong>, maka CloudShell seperti <strong>menyewa bengkel lengkap</strong> yang sudah ada semua alatnya — Anda tinggal datang dan bekerja.</p>
+  </div>
+</section>
+
+<!-- 09 ROLES -->
+<section id="roles">
+  <div class="sec-head"><div class="sec-num">09</div><h2>IAM Roles untuk AWS Services</h2></div>
+  <p class="sec-sub">Memberi izin pada layanan, bukan orang</p>
+
+  <p>Sejauh ini izin kita berikan ke <em>orang</em> (user). Tapi seringkali <strong>layanan AWS</strong> sendiri perlu izin untuk bekerja. Contoh: sebuah server EC2 perlu membaca file dari S3. Server bukan manusia — ia tidak bisa mengetik password atau menyimpan access keys dengan aman.</p>
+
+  <p>Solusinya: <em class="term">IAM Role</em>. Role mirip user (punya policy), tapi dirancang untuk <strong>"dipinjam" (assumed) oleh layanan AWS</strong>, bukan dipakai login oleh orang. Kredensialnya bersifat sementara dan dikelola otomatis oleh AWS.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 230" xmlns="http://www.w3.org/2000/svg" font-family="Sora,sans-serif">
+      <!-- EC2 -->
+      <g>
+        <rect x="40" y="80" width="160" height="90" rx="13" fill="#fdf4e3" stroke="#ec7211" stroke-width="1.5"/>
+        <text x="120" y="118" font-size="30" text-anchor="middle">🖥️</text>
+        <text x="120" y="148" font-size="14" font-weight="700" fill="#ec7211" text-anchor="middle">EC2 Instance</text>
+        <text x="120" y="163" font-size="10.5" fill="#4a5765" text-anchor="middle">butuh akses S3</text>
+      </g>
+      <!-- role -->
+      <g>
+        <rect x="300" y="80" width="160" height="90" rx="13" fill="#1c2530"/>
+        <text x="380" y="118" font-size="30" text-anchor="middle">🎭</text>
+        <text x="380" y="148" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">IAM Role</text>
+        <text x="380" y="163" font-size="10.5" fill="#9aa6b2" text-anchor="middle">📄 policy: read S3</text>
+      </g>
+      <!-- S3 -->
+      <g>
+        <rect x="560" y="80" width="160" height="90" rx="13" fill="#e3f3f0" stroke="#0a8f7a" stroke-width="1.5"/>
+        <text x="640" y="118" font-size="30" text-anchor="middle">🪣</text>
+        <text x="640" y="148" font-size="14" font-weight="700" fill="#0a8f7a" text-anchor="middle">S3 Bucket</text>
+        <text x="640" y="163" font-size="10.5" fill="#4a5765" text-anchor="middle">file & data</text>
+      </g>
+      <!-- arrows -->
+      <line x1="205" y1="125" x2="295" y2="125" stroke="#ec7211" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="250" y="115" font-size="10.5" fill="#ec7211" text-anchor="middle">memakai</text>
+      <line x1="465" y1="125" x2="555" y2="125" stroke="#0a8f7a" stroke-width="2" marker-end="url(#ar2)"/>
+      <text x="510" y="115" font-size="10.5" fill="#0a8f7a" text-anchor="middle">izin akses</text>
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#ec7211"/></marker>
+        <marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#0a8f7a"/></marker>
+      </defs>
+      <text x="380" y="205" font-size="12" fill="#4a5765" text-anchor="middle">EC2 "memakai" Role untuk mendapat izin membaca S3 — tanpa menyimpan access keys di server</text>
+    </svg>
+    <figcaption><b>Contoh klasik:</b> EC2 instance memakai IAM Role agar bisa mengakses S3 dengan aman.</figcaption>
+  </figure>
+
+  <p>Layanan yang umum memakai role antara lain: <strong>EC2 Instances</strong>, <strong>Lambda Functions</strong>, dan layanan otomasi seperti <strong>CloudFormation</strong>. Anda membuat role, menentukan layanan apa yang boleh memakainya, lalu menempelkan policy izin yang dibutuhkan.</p>
+
+  <div class="box tip">
+    <span class="box-tag">💡 Intinya</span>
+    <p><strong>Role = identitas untuk mesin/layanan.</strong> Selalu pilih role daripada menanam access keys di dalam kode atau server — lebih aman karena kredensialnya sementara dan dikelola otomatis.</p>
+  </div>
+</section>
+
+<!-- 10 SECURITY TOOLS -->
+<section id="tools">
+  <div class="sec-head"><div class="sec-num">10</div><h2>IAM Security Tools</h2></div>
+  <p class="sec-sub">Dua alat untuk audit keamanan</p>
+
+  <p>IAM punya dua alat bawaan untuk membantu Anda memeriksa kesehatan keamanan akun:</p>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h4><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Credentials Report</h4>
+      <p>Laporan tingkat <b>akun</b>. Daftar semua user beserta status kredensialnya: kapan password terakhir diganti, apakah MFA aktif, kapan access key terakhir dipakai. Bisa diunduh sebagai CSV.</p>
+    </div>
+    <div class="card">
+      <h4><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>Access Advisor</h4>
+      <p>Laporan tingkat <b>user</b>. Menunjukkan layanan apa saja yang punya izin dan <b>kapan terakhir benar-benar diakses</b>. Sangat berguna untuk menemukan dan mencabut izin yang tidak terpakai.</p>
+    </div>
+  </div>
+
+  <div class="box tip">
+    <span class="box-tag">💡 Manfaat</span>
+    <p>Gunakan <strong>Access Advisor</strong> untuk menerapkan prinsip <em>least privilege</em>: kalau ada izin yang tidak pernah dipakai selama berbulan-bulan, kemungkinan besar memang tidak perlu — dan sebaiknya dicabut.</p>
+  </div>
+</section>
+
+<!-- 11 BEST PRACTICES -->
+<section id="best">
+  <div class="sec-head"><div class="sec-num">11</div><h2>IAM Best Practices</h2></div>
+  <p class="sec-sub">Aturan emas yang wajib diikuti</p>
+
+  <div class="grid grid-2">
+    <div class="card"><h4>🚫 Jangan pakai Root</h4><p>Root user hanya untuk setup awal akun. Untuk semua hal lain, gunakan IAM user.</p></div>
+    <div class="card"><h4>👤 Satu user satu orang</h4><p>Jangan berbagi akun. Setiap orang punya IAM user sendiri.</p></div>
+    <div class="card"><h4>👥 Tempel policy ke Group</h4><p>Kelola izin lewat group, bukan ke tiap user satu-satu.</p></div>
+    <div class="card"><h4>🔐 Wajibkan password kuat</h4><p>Terapkan password policy (panjang minimum, kombinasi karakter).</p></div>
+    <div class="card"><h4>📱 Aktifkan MFA</h4><p>Terutama untuk root dan semua akun penting.</p></div>
+    <div class="card"><h4>🎭 Pakai Role untuk layanan</h4><p>Beri izin EC2/Lambda lewat role, bukan access keys.</p></div>
+    <div class="card"><h4>🔑 Jaga Access Keys</h4><p>Jangan share, jangan commit ke repo, rotasi berkala.</p></div>
+    <div class="card"><h4>📊 Audit rutin</h4><p>Gunakan Credentials Report & Access Advisor secara berkala.</p></div>
+  </div>
+
+  <div class="box analogy">
+    <span class="box-tag">🎯 Prinsip utama</span>
+    <p><strong>Least Privilege (hak akses seminimal mungkin).</strong> Beri setiap orang/layanan <em>hanya</em> izin yang benar-benar dibutuhkan untuk tugasnya — tidak lebih. Ini meminimalkan kerusakan jika satu akun disusupi.</p>
+  </div>
+</section>
+
+<!-- 12 SHARED RESPONSIBILITY -->
+<section id="shared">
+  <div class="sec-head"><div class="sec-num">12</div><h2>Shared Responsibility Model</h2></div>
+  <p class="sec-sub">Siapa bertanggung jawab atas apa</p>
+
+  <p>Keamanan di AWS adalah <strong>tanggung jawab bersama</strong>. AWS mengamankan <em>infrastruktur</em>-nya, sementara Anda bertanggung jawab atas <em>cara Anda menggunakannya</em>. Untuk IAM, pembagiannya jelas:</p>
+
+  <figure>
+    <svg viewBox="0 0 760 290" xmlns="http://www.w3.org/2000/svg" font-family="Sora,sans-serif">
+      <!-- AWS side -->
+      <rect x="30" y="30" width="340" height="230" rx="14" fill="#fdf4e3" stroke="#ec7211" stroke-width="1.5"/>
+      <text x="200" y="62" font-size="16" font-weight="800" fill="#ec7211" text-anchor="middle">AWS bertanggung jawab</text>
+      <text x="200" y="80" font-size="11" fill="#a5650f" text-anchor="middle">"Security OF the cloud"</text>
+      <g font-size="13" fill="#1c2530">
+        <text x="55" y="118">✔ Infrastruktur global IAM</text>
+        <text x="55" y="148">✔ Mengelola & menjalankan layanan IAM</text>
+        <text x="55" y="178">✔ Keamanan fisik data center</text>
+        <text x="55" y="208">✔ Compliance & sertifikasi infrastruktur</text>
+      </g>
+      <!-- Customer side -->
+      <rect x="390" y="30" width="340" height="230" rx="14" fill="#e3f3f0" stroke="#0a8f7a" stroke-width="1.5"/>
+      <text x="560" y="62" font-size="16" font-weight="800" fill="#0a8f7a" text-anchor="middle">ANDA bertanggung jawab</text>
+      <text x="560" y="80" font-size="11" fill="#0a6b5b" text-anchor="middle">"Security IN the cloud"</text>
+      <g font-size="13" fill="#1c2530">
+        <text x="415" y="118">✔ Membuat user, group, role, policy</text>
+        <text x="415" y="148">✔ Mengaktifkan MFA & password kuat</text>
+        <text x="415" y="178">✔ Menjaga & merotasi access keys</text>
+        <text x="415" y="208">✔ Menerapkan least privilege</text>
+        <text x="415" y="238">✔ Audit rutin (Credentials Report dll)</text>
+      </g>
+    </svg>
+    <figcaption>AWS mengamankan <b>fondasi IAM</b>; Anda mengamankan <b>cara mengonfigurasi & menggunakannya</b>.</figcaption>
+  </figure>
+
+  <p>Kesimpulan sederhananya: <strong>AWS menyediakan alat keamanan yang andal, tapi memakainya dengan benar adalah tugas Anda.</strong> Kebanyakan insiden keamanan terjadi karena kesalahan konfigurasi di sisi pelanggan — misalnya access key bocor atau policy yang terlalu longgar.</p>
+</section>
+
+<!-- 13 SUMMARY -->
+<section id="ringkasan">
+  <div class="sec-head"><div class="sec-num">13</div><h2>Ringkasan</h2></div>
+  <p class="sec-sub">Poin-poin kunci yang harus diingat</p>
+
+  <div class="recap">
+    <h3>🎯 Yang perlu Anda kuasai dari modul IAM</h3>
+    <ul>
+      <li><b>Users</b> = orang. <b>Groups</b> = kumpulan user. <b>Policies</b> = dokumen JSON berisi izin.</li>
+      <li><b>Root user</b> hanya untuk setup awal — jangan dipakai sehari-hari.</li>
+      <li>Tempelkan <b>policy ke group</b>, bukan ke tiap user, agar mudah dikelola.</li>
+      <li>Aktifkan <b>MFA</b> (lapisan kedua: password + perangkat) terutama untuk root.</li>
+      <li>Tiga cara akses AWS: <b>Console</b> (browser), <b>CLI</b> (terminal), <b>SDK</b> (kode). CLI & SDK butuh <b>Access Keys</b> — jaga kerahasiaannya.</li>
+      <li><b>CloudShell</b> = terminal siap pakai di browser, tanpa instalasi & konfigurasi.</li>
+      <li><b>IAM Roles</b> memberi izin pada <b>layanan</b> (EC2, Lambda) — bukan orang.</li>
+      <li>Audit dengan <b>Credentials Report</b> (level akun) & <b>Access Advisor</b> (level user).</li>
+      <li>Pegang prinsip <b>least privilege</b> — beri izin seminimal yang dibutuhkan.</li>
+      <li><b>Shared Responsibility:</b> AWS amankan infrastruktur, Anda amankan konfigurasi & penggunaan.</li>
+    </ul>
+  </div>
+
+  <div class="box tip">
+    <span class="box-tag">▶️ Langkah selanjutnya</span>
+    <p>Setelah memahami IAM, lanjutkan ke modul <strong>EC2</strong> (server virtual) — di sana Anda akan langsung mempraktikkan IAM Roles untuk pertama kalinya. IAM adalah fondasi yang akan terus Anda pakai di semua layanan AWS lainnya.</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <b>Fundamental AWS untuk Pemula</b> · Modul AWS IAM (Identity and Access Management)<br>
+  Disusun dengan bahasa sederhana & visual untuk memudahkan pemahaman.
+</footer>
+
+<script>
+// Highlight TOC item saat scroll
+const sections=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('nav.toc a');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const active=document.querySelector('nav.toc a[href="#'+e.target.id+'"]');
+      if(active)active.classList.add('active');
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>
+
+<script>
+// Reading controls: theme cycle (light → sepia → dark) + font size
+(function(){
+  var root=document.documentElement;
+  var THEMES=['light','sepia','dark'];
+  var ICON={light:'☀️',sepia:'📖',dark:'🌙'};
+  var MIN=0.85,MAX=1.3,STEP=0.1;
+  var scale=parseFloat(localStorage.getItem('reader-scale'))||1;
+
+  function setTheme(t){
+    root.setAttribute('data-theme',t);
+    try{localStorage.setItem('reader-theme',t);}catch(e){}
+    document.querySelectorAll('[data-theme-toggle] .ti').forEach(function(el){el.textContent=ICON[t];});
+  }
+  function setScale(s){
+    scale=Math.min(MAX,Math.max(MIN,Math.round(s*100)/100));
+    root.style.setProperty('--scale',scale);
+    try{localStorage.setItem('reader-scale',scale);}catch(e){}
+  }
+
+  setTheme(root.getAttribute('data-theme')||'light');
+  setScale(scale);
+
+  document.querySelectorAll('[data-theme-toggle]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var i=THEMES.indexOf(root.getAttribute('data-theme'));
+      setTheme(THEMES[(i+1)%THEMES.length]);
+    });
+  });
+  document.querySelectorAll('[data-font="inc"]').forEach(function(b){b.addEventListener('click',function(){setScale(scale+STEP);});});
+  document.querySelectorAll('[data-font="dec"]').forEach(function(b){b.addEventListener('click',function(){setScale(scale-STEP);});});
+})();
+</script>
+
+</body>
+</html>

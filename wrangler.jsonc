@@ -1,0 +1,11 @@
+{
+  // Situs Astro static murni: deploy isi folder dist/ sebagai static assets.
+  // Tanpa "main" (tidak perlu Worker script) dan tanpa adapter @astrojs/cloudflare,
+  // sehingga `wrangler deploy` langsung memakai config ini dan tidak menjalankan
+  // wizard "astro add cloudflare" (yang gagal di public/.assetsignore).
+  "name": "aws-cloud-practitioner",
+  "compatibility_date": "2026-06-04",
+  "assets": {
+    "directory": "./dist"
+  }
+}

@@ -1,0 +1,50 @@
+<svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" font-family="Sora, Arial, sans-serif">
+  <rect x="20" y="20" width="720" height="360" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+  <text x="380" y="50" text-anchor="middle" font-size="18" fill="#232f3e" font-weight="700">VPC Peering vs Transit Gateway</text>
+
+  <rect x="45" y="74" width="330" height="290" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2" />
+  <text x="210" y="100" text-anchor="middle" font-size="14" fill="#b91c1c" font-weight="700">VPC Peering &middot; full mesh</text>
+  <text x="210" y="120" text-anchor="middle" font-size="11" fill="#42505e">tiap pasangan butuh koneksi sendiri (non-transitif)</text>
+
+  <line x1="130" y1="180" x2="290" y2="180" stroke="#dc2626" stroke-width="2" />
+  <line x1="130" y1="300" x2="290" y2="300" stroke="#dc2626" stroke-width="2" />
+  <line x1="130" y1="180" x2="130" y2="300" stroke="#dc2626" stroke-width="2" />
+  <line x1="290" y1="180" x2="290" y2="300" stroke="#dc2626" stroke-width="2" />
+  <line x1="130" y1="180" x2="290" y2="300" stroke="#dc2626" stroke-width="2" />
+  <line x1="290" y1="180" x2="130" y2="300" stroke="#dc2626" stroke-width="2" />
+
+  <circle cx="130" cy="180" r="30" fill="#ffffff" stroke="#dc2626" stroke-width="2.5" />
+  <text x="130" y="185" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">VPC A</text>
+  <circle cx="290" cy="180" r="30" fill="#ffffff" stroke="#dc2626" stroke-width="2.5" />
+  <text x="290" y="185" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">VPC B</text>
+  <circle cx="130" cy="300" r="30" fill="#ffffff" stroke="#dc2626" stroke-width="2.5" />
+  <text x="130" y="305" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">VPC C</text>
+  <circle cx="290" cy="300" r="30" fill="#ffffff" stroke="#dc2626" stroke-width="2.5" />
+  <text x="290" y="305" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">VPC D</text>
+
+  <text x="210" y="350" text-anchor="middle" font-size="11" fill="#b91c1c" font-weight="700">4 VPC = 6 koneksi (n(n-1)/2)</text>
+
+  <rect x="395" y="74" width="320" height="290" rx="14" fill="#ecfdf5" stroke="#059669" stroke-width="2" />
+  <text x="555" y="100" text-anchor="middle" font-size="14" fill="#047857" font-weight="700">Transit Gateway &middot; hub-and-spoke</text>
+  <text x="555" y="120" text-anchor="middle" font-size="11" fill="#42505e">tiap VPC cukup satu attachment (transitive)</text>
+
+  <line x1="555" y1="240" x2="470" y2="170" stroke="#059669" stroke-width="2.5" />
+  <line x1="555" y1="240" x2="640" y2="170" stroke="#059669" stroke-width="2.5" />
+  <line x1="555" y1="240" x2="470" y2="310" stroke="#059669" stroke-width="2.5" />
+  <line x1="555" y1="240" x2="640" y2="310" stroke="#059669" stroke-width="2.5" />
+
+  <rect x="505" y="216" width="100" height="48" rx="10" fill="#232f3e" stroke="#232f3e" stroke-width="2" />
+  <text x="555" y="237" text-anchor="middle" font-size="11" fill="#ff9d4d" font-weight="700">Transit</text>
+  <text x="555" y="252" text-anchor="middle" font-size="11" fill="#ff9d4d" font-weight="700">Gateway</text>
+
+  <circle cx="470" cy="170" r="28" fill="#ffffff" stroke="#059669" stroke-width="2.5" />
+  <text x="470" y="175" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">VPC A</text>
+  <circle cx="640" cy="170" r="28" fill="#ffffff" stroke="#059669" stroke-width="2.5" />
+  <text x="640" y="175" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">VPC B</text>
+  <circle cx="470" cy="310" r="28" fill="#ffffff" stroke="#059669" stroke-width="2.5" />
+  <text x="470" y="315" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">VPC C</text>
+  <circle cx="640" cy="310" r="28" fill="#ffffff" stroke="#059669" stroke-width="2.5" />
+  <text x="640" y="315" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">on-prem</text>
+
+  <text x="555" y="350" text-anchor="middle" font-size="11" fill="#047857" font-weight="700">4 koneksi ke 1 hub, tidak perlu full mesh</text>
+</svg>

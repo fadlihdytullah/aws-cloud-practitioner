@@ -1,0 +1,77 @@
+<svg viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <text x="30" y="30" text-anchor="start" font-size="15" fill="#232f3e" font-weight="700">Pasangan layanan yang sering tertukar &middot; cari pembeda kunci</text>
+
+  <rect x="30" y="48" width="218" height="86" rx="10" fill="#eef6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="44" y="70" text-anchor="start" font-size="12" fill="#2563eb" font-weight="700">CloudTrail vs CloudWatch</text>
+  <text x="44" y="90" text-anchor="start" font-size="10" fill="#42505e">CloudTrail = audit siapa panggil API</text>
+  <text x="44" y="106" text-anchor="start" font-size="10" fill="#42505e">CloudWatch = metrics, log, alarm</text>
+  <text x="44" y="124" text-anchor="start" font-size="10" fill="#2563eb" font-weight="700">Kunci: "who called API" vs "observability"</text>
+
+  <rect x="271" y="48" width="218" height="86" rx="10" fill="#fff7ed" stroke="#ec7211" stroke-width="2"/>
+  <text x="285" y="70" text-anchor="start" font-size="12" fill="#ec7211" font-weight="700">KMS vs Secrets Manager</text>
+  <text x="285" y="90" text-anchor="start" font-size="10" fill="#42505e">KMS = kelola kunci kriptografi</text>
+  <text x="285" y="106" text-anchor="start" font-size="10" fill="#42505e">Secrets Mgr = simpan + rotasi secret</text>
+  <text x="285" y="124" text-anchor="start" font-size="10" fill="#ec7211" font-weight="700">Kunci: "encryption key" vs "rotate password"</text>
+
+  <rect x="512" y="48" width="218" height="86" rx="10" fill="#ecfeff" stroke="#0891b2" stroke-width="2"/>
+  <text x="526" y="70" text-anchor="start" font-size="12" fill="#0891b2" font-weight="700">WAF vs Shield</text>
+  <text x="526" y="90" text-anchor="start" font-size="10" fill="#42505e">WAF = filter request web layer 7</text>
+  <text x="526" y="106" text-anchor="start" font-size="10" fill="#42505e">Shield = proteksi DDoS</text>
+  <text x="526" y="124" text-anchor="start" font-size="10" fill="#0891b2" font-weight="700">Kunci: "SQLi/XSS" vs "DDoS / volumetric"</text>
+
+  <rect x="30" y="148" width="218" height="86" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="44" y="170" text-anchor="start" font-size="12" fill="#16a34a" font-weight="700">S3 vs EBS vs EFS vs FSx</text>
+  <text x="44" y="190" text-anchor="start" font-size="10" fill="#42505e">S3 = objek &middot; EBS = block 1 EC2</text>
+  <text x="44" y="206" text-anchor="start" font-size="10" fill="#42505e">EFS = file Linux bersama &middot; FSx = file khusus</text>
+  <text x="44" y="224" text-anchor="start" font-size="10" fill="#16a34a" font-weight="700">Kunci: "shared file" = EFS, bukan EBS</text>
+
+  <rect x="271" y="148" width="218" height="86" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="285" y="170" text-anchor="start" font-size="12" fill="#7c3aed" font-weight="700">RDS vs Aurora vs DynamoDB</text>
+  <text x="285" y="190" text-anchor="start" font-size="10" fill="#42505e">RDS/Aurora = relational SQL</text>
+  <text x="285" y="206" text-anchor="start" font-size="10" fill="#42505e">DynamoDB = NoSQL key-value serverless</text>
+  <text x="285" y="224" text-anchor="start" font-size="10" fill="#7c3aed" font-weight="700">Kunci: "serverless key-value" = DynamoDB</text>
+
+  <rect x="512" y="148" width="218" height="86" rx="10" fill="#fef2f2" stroke="#e11d48" stroke-width="2"/>
+  <text x="526" y="170" text-anchor="start" font-size="12" fill="#e11d48" font-weight="700">Athena vs Redshift</text>
+  <text x="526" y="190" text-anchor="start" font-size="10" fill="#42505e">Athena = SQL serverless ke file S3</text>
+  <text x="526" y="206" text-anchor="start" font-size="10" fill="#42505e">Redshift = data warehouse terkelola</text>
+  <text x="526" y="224" text-anchor="start" font-size="10" fill="#e11d48" font-weight="700">Kunci: "ad-hoc query on S3" = Athena</text>
+
+  <rect x="30" y="248" width="218" height="86" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="44" y="270" text-anchor="start" font-size="12" fill="#d97706" font-weight="700">GuardDuty vs Inspector vs Macie</text>
+  <text x="44" y="290" text-anchor="start" font-size="10" fill="#42505e">GuardDuty = threat dari log akun/VPC</text>
+  <text x="44" y="306" text-anchor="start" font-size="10" fill="#42505e">Inspector = CVE &middot; Macie = PII di S3</text>
+  <text x="44" y="324" text-anchor="start" font-size="10" fill="#d97706" font-weight="700">Kunci: "sensitive data in S3" = Macie</text>
+
+  <rect x="271" y="248" width="218" height="86" rx="10" fill="#eef6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="285" y="270" text-anchor="start" font-size="12" fill="#2563eb" font-weight="700">Calculator vs Cost Explorer vs Budgets</text>
+  <text x="285" y="290" text-anchor="start" font-size="10" fill="#42505e">Calculator = estimasi SEBELUM deploy</text>
+  <text x="285" y="306" text-anchor="start" font-size="10" fill="#42505e">Cost Explorer = analisis biaya HISTORIS</text>
+  <text x="285" y="324" text-anchor="start" font-size="10" fill="#2563eb" font-weight="700">Budgets = ALARM saat lewat threshold</text>
+
+  <rect x="512" y="248" width="218" height="86" rx="10" fill="#fff7ed" stroke="#ec7211" stroke-width="2"/>
+  <text x="526" y="270" text-anchor="start" font-size="12" fill="#ec7211" font-weight="700">Route 53 vs CloudFront</text>
+  <text x="526" y="290" text-anchor="start" font-size="10" fill="#42505e">Route 53 = DNS + domain routing</text>
+  <text x="526" y="306" text-anchor="start" font-size="10" fill="#42505e">CloudFront = CDN / cache di edge</text>
+  <text x="526" y="324" text-anchor="start" font-size="10" fill="#ec7211" font-weight="700">Kunci: global delivery sering butuh keduanya</text>
+
+  <rect x="30" y="348" width="218" height="86" rx="10" fill="#ecfeff" stroke="#0891b2" stroke-width="2"/>
+  <text x="44" y="370" text-anchor="start" font-size="12" fill="#0891b2" font-weight="700">SQS vs SNS vs EventBridge</text>
+  <text x="44" y="390" text-anchor="start" font-size="10" fill="#42505e">SQS = antrean (pull, point-to-point)</text>
+  <text x="44" y="406" text-anchor="start" font-size="10" fill="#42505e">SNS = pub/sub fan-out (push)</text>
+  <text x="44" y="424" text-anchor="start" font-size="10" fill="#0891b2" font-weight="700">EventBridge = event bus antar aplikasi/SaaS</text>
+
+  <rect x="271" y="348" width="218" height="86" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="285" y="370" text-anchor="start" font-size="12" fill="#16a34a" font-weight="700">WorkSpaces vs AppStream 2.0</text>
+  <text x="285" y="390" text-anchor="start" font-size="10" fill="#42505e">WorkSpaces = desktop virtual penuh</text>
+  <text x="285" y="406" text-anchor="start" font-size="10" fill="#42505e">AppStream = streaming aplikasi tunggal</text>
+  <text x="285" y="424" text-anchor="start" font-size="10" fill="#16a34a" font-weight="700">Kunci: "full desktop" = WorkSpaces</text>
+
+  <rect x="512" y="348" width="218" height="86" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="526" y="370" text-anchor="start" font-size="12" fill="#7c3aed" font-weight="700">Connect vs SES vs SNS</text>
+  <text x="526" y="390" text-anchor="start" font-size="10" fill="#42505e">Connect = contact center cloud</text>
+  <text x="526" y="406" text-anchor="start" font-size="10" fill="#42505e">SES = email skala besar/transaksional</text>
+  <text x="526" y="424" text-anchor="start" font-size="10" fill="#7c3aed" font-weight="700">Kunci: "contact center" bukan SES</text>
+
+  <text x="30" y="458" text-anchor="start" font-size="10" fill="#64748b">Rekognition (gambar/video) vs Textract (teks+struktur dokumen) &middot; Transcribe (suara &rarr; teks) vs Polly (teks &rarr; suara).</text>
+</svg>

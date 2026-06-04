@@ -1,0 +1,48 @@
+<svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="bf5arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <text x="380" y="26" text-anchor="middle" font-size="17" fill="#232f3e" font-weight="700">Consolidated Billing di AWS Organizations</text>
+  <text x="380" y="46" text-anchor="middle" font-size="12" fill="#64748b">Satu tagihan, penggunaan digabung, diskon dibagi. Akses resource tetap terpisah.</text>
+
+  <rect x="280" y="62" width="200" height="58" rx="12" fill="#232f3e" />
+  <text x="380" y="86" text-anchor="middle" font-size="13" fill="#ff9d4d" font-weight="700">Management Account</text>
+  <text x="380" y="106" text-anchor="middle" font-size="11" fill="#ffffff">membayar semua tagihan</text>
+
+  <line x1="320" y1="120" x2="150" y2="176" stroke="#2563eb" stroke-width="2.5" marker-end="url(#bf5arr)" />
+  <line x1="355" y1="120" x2="300" y2="176" stroke="#2563eb" stroke-width="2.5" marker-end="url(#bf5arr)" />
+  <line x1="405" y1="120" x2="455" y2="176" stroke="#2563eb" stroke-width="2.5" marker-end="url(#bf5arr)" />
+  <line x1="440" y1="120" x2="610" y2="176" stroke="#2563eb" stroke-width="2.5" marker-end="url(#bf5arr)" />
+
+  <rect x="70" y="180" width="140" height="56" rx="10" fill="#e8f2ff" stroke="#2563eb" stroke-width="2" />
+  <text x="140" y="204" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Akun prod</text>
+  <text x="140" y="223" text-anchor="middle" font-size="11" fill="#42505e">member account</text>
+
+  <rect x="230" y="180" width="140" height="56" rx="10" fill="#e8f2ff" stroke="#2563eb" stroke-width="2" />
+  <text x="300" y="204" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Akun dev</text>
+  <text x="300" y="223" text-anchor="middle" font-size="11" fill="#42505e">member account</text>
+
+  <rect x="390" y="180" width="140" height="56" rx="10" fill="#e8f2ff" stroke="#2563eb" stroke-width="2" />
+  <text x="460" y="204" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Akun security</text>
+  <text x="460" y="223" text-anchor="middle" font-size="11" fill="#42505e">member account</text>
+
+  <rect x="550" y="180" width="140" height="56" rx="10" fill="#e8f2ff" stroke="#2563eb" stroke-width="2" />
+  <text x="620" y="204" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Akun analytics</text>
+  <text x="620" y="223" text-anchor="middle" font-size="11" fill="#42505e">member account</text>
+
+  <rect x="70" y="262" width="620" height="76" rx="12" fill="#fff7ed" stroke="#ec7211" stroke-width="2" />
+  <text x="380" y="286" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">Penggunaan digabung jadi satu &rarr; manfaat consolidated billing</text>
+  <text x="180" y="312" text-anchor="middle" font-size="11" fill="#ec7211" font-weight="700">satu bill</text>
+  <text x="320" y="312" text-anchor="middle" font-size="11" fill="#ec7211" font-weight="700">tier diskon volume lebih cepat</text>
+  <text x="500" y="312" text-anchor="middle" font-size="11" fill="#ec7211" font-weight="700">RI / Savings Plans dibagi (ON default)</text>
+  <text x="640" y="312" text-anchor="middle" font-size="11" fill="#ec7211" font-weight="700">tanpa biaya tambahan</text>
+
+  <rect x="220" y="358" width="320" height="66" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2" />
+  <rect x="244" y="376" width="26" height="22" rx="4" fill="#dc2626" />
+  <rect x="250" y="370" width="14" height="12" rx="6" fill="none" stroke="#dc2626" stroke-width="2.5" />
+  <text x="395" y="382" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Billing digabung &ne; akses digabung</text>
+  <text x="395" y="402" text-anchor="middle" font-size="11" fill="#42505e">akses resource tetap lewat IAM / Identity Center / role</text>
+  <text x="395" y="417" text-anchor="middle" font-size="10" fill="#dc2626">jebakan soal klasik</text>
+</svg>

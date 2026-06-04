@@ -1,0 +1,39 @@
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" font-family="Sora, Arial, sans-serif">
+  <defs>
+    <marker id="arrowMig8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect x="16" y="16" width="728" height="348" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+  <text x="380" y="46" text-anchor="middle" font-size="19" fill="#232f3e" font-weight="700">Cara MGN Rehost Server dengan Downtime Minimal</text>
+  <text x="380" y="66" text-anchor="middle" font-size="11" fill="#64748b">Server lama tetap melayani pengguna sampai cutover terakhir</text>
+
+  <!-- source side -->
+  <rect x="40" y="92" width="220" height="200" rx="14" fill="#232f3e" />
+  <text x="150" y="120" text-anchor="middle" font-size="14" fill="#ff9d4d" font-weight="700">Server sumber</text>
+  <text x="150" y="140" text-anchor="middle" font-size="11" fill="#ffffff">fisik / virtual / cloud lain</text>
+  <rect x="66" y="156" width="168" height="44" rx="9" fill="#42505e" />
+  <text x="150" y="182" text-anchor="middle" font-size="11" fill="#ffffff">tetap online melayani user</text>
+  <rect x="66" y="212" width="168" height="56" rx="9" fill="#1f6feb" />
+  <text x="150" y="236" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Replication Agent</text>
+  <text x="150" y="254" text-anchor="middle" font-size="10" fill="#e0f2fe">agen ringan terpasang</text>
+
+  <!-- continuous replication arrow -->
+  <line x1="260" y1="240" x2="430" y2="240" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowMig8)" />
+  <text x="345" y="228" text-anchor="middle" font-size="11" fill="#42505e" font-weight="700">block-level &middot; terus-menerus</text>
+  <text x="345" y="258" text-anchor="middle" font-size="10" fill="#64748b">salin blok disk yang berubah</text>
+
+  <!-- AWS side -->
+  <rect x="436" y="92" width="284" height="200" rx="14" fill="#e0f2fe" stroke="#1f6feb" stroke-width="2" />
+  <text x="578" y="120" text-anchor="middle" font-size="14" fill="#1f6feb" font-weight="700">Akun AWS</text>
+  <rect x="458" y="136" width="240" height="52" rx="9" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="578" y="158" text-anchor="middle" font-size="11" fill="#232f3e" font-weight="700">Staging area</text>
+  <text x="578" y="176" text-anchor="middle" font-size="10" fill="#42505e">salinan disk selalu sinkron</text>
+  <rect x="458" y="198" width="240" height="42" rx="9" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="578" y="224" text-anchor="middle" font-size="11" fill="#232f3e">test instance (uji dulu, tanpa ganggu produksi)</text>
+  <rect x="458" y="250" width="240" height="30" rx="9" fill="#ec7211" />
+  <text x="578" y="270" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">cutover &rarr; EC2 produksi</text>
+
+  <text x="380" y="324" text-anchor="middle" font-size="11" fill="#232f3e" font-weight="700">Downtime yang dirasakan pengguna hanya sebatas peralihan cutover terakhir</text>
+  <text x="380" y="346" text-anchor="middle" font-size="10" fill="#64748b">Rehost / lift and shift &middot; MGN adalah penerus CloudEndure Migration dan pengganti AWS SMS</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" font-family="Sora, Arial, sans-serif">
+  <defs>
+    <marker id="oasArrow4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+    <marker id="oasArrow4o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ec7211" />
+    </marker>
+  </defs>
+  <rect x="20" y="22" width="720" height="376" rx="20" fill="#f8fafc" stroke="#d6e4f0" stroke-width="2" />
+  <text x="380" y="48" text-anchor="middle" font-size="15" fill="#232f3e" font-weight="700">Alur data AWS IoT Core: dari device sampai layanan lain</text>
+
+  <rect x="36" y="78" width="150" height="92" rx="12" fill="#232f3e" />
+  <text x="111" y="108" text-anchor="middle" font-size="14" fill="#ff9d4d" font-weight="700">Device (Thing)</text>
+  <text x="111" y="130" text-anchor="middle" font-size="11" fill="#ffffff">sensor / mesin</text>
+  <text x="111" y="150" text-anchor="middle" font-size="10" fill="#cbd5e1">identitas X.509 cert</text>
+
+  <rect x="232" y="78" width="150" height="92" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2" />
+  <text x="307" y="108" text-anchor="middle" font-size="13" fill="#1e3a8a" font-weight="700">Device Gateway</text>
+  <text x="307" y="128" text-anchor="middle" font-size="11" fill="#42505e">+ Message Broker</text>
+  <text x="307" y="148" text-anchor="middle" font-size="11" fill="#42505e">pub/sub topic</text>
+
+  <rect x="428" y="78" width="150" height="92" rx="12" fill="#fff7ed" stroke="#ec7211" stroke-width="2" />
+  <text x="503" y="108" text-anchor="middle" font-size="13" fill="#9a3412" font-weight="700">Rules Engine</text>
+  <text x="503" y="128" text-anchor="middle" font-size="11" fill="#42505e">filter SQL-like</text>
+  <text x="503" y="148" text-anchor="middle" font-size="11" fill="#42505e">transform + route</text>
+
+  <line x1="186" y1="124" x2="232" y2="124" stroke="#2563eb" stroke-width="3" marker-end="url(#oasArrow4)" />
+  <text x="209" y="116" text-anchor="middle" font-size="10" fill="#42505e" font-weight="700">MQTT</text>
+  <text x="209" y="142" text-anchor="middle" font-size="9" fill="#42505e">TLS</text>
+  <line x1="382" y1="124" x2="428" y2="124" stroke="#2563eb" stroke-width="3" marker-end="url(#oasArrow4)" />
+
+  <rect x="232" y="196" width="150" height="58" rx="12" fill="#eef2ff" stroke="#6366f1" stroke-width="1.8" />
+  <text x="307" y="220" text-anchor="middle" font-size="12" fill="#4338ca" font-weight="700">Device Shadow</text>
+  <text x="307" y="238" text-anchor="middle" font-size="10" fill="#42505e">state walau device offline</text>
+  <line x1="307" y1="170" x2="307" y2="196" stroke="#6366f1" stroke-width="2" marker-end="url(#oasArrow4)" />
+
+  <text x="503" y="196" text-anchor="middle" font-size="11" fill="#9a3412" font-weight="700">fan-out ke layanan lain</text>
+  <rect x="612" y="184" width="110" height="34" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.6" />
+  <text x="667" y="206" text-anchor="middle" font-size="12" fill="#0f766e" font-weight="700">Lambda</text>
+  <rect x="612" y="226" width="110" height="34" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.6" />
+  <text x="667" y="248" text-anchor="middle" font-size="12" fill="#0f766e" font-weight="700">DynamoDB</text>
+  <rect x="612" y="268" width="110" height="34" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.6" />
+  <text x="667" y="290" text-anchor="middle" font-size="12" fill="#0f766e" font-weight="700">SNS</text>
+  <rect x="612" y="310" width="110" height="34" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.6" />
+  <text x="667" y="332" text-anchor="middle" font-size="12" fill="#0f766e" font-weight="700">Amazon S3</text>
+  <line x1="503" y1="170" x2="611" y2="201" stroke="#ec7211" stroke-width="2.5" marker-end="url(#oasArrow4o)" />
+  <line x1="503" y1="170" x2="611" y2="243" stroke="#ec7211" stroke-width="2.5" marker-end="url(#oasArrow4o)" />
+  <line x1="503" y1="170" x2="611" y2="285" stroke="#ec7211" stroke-width="2.5" marker-end="url(#oasArrow4o)" />
+  <line x1="503" y1="170" x2="611" y2="327" stroke="#ec7211" stroke-width="2.5" marker-end="url(#oasArrow4o)" />
+
+  <rect x="36" y="334" width="350" height="46" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4" />
+  <text x="48" y="354" font-size="11" fill="#1e3a8a" font-weight="700">Protokol: MQTT, MQTT over WebSocket, HTTPS, LoRaWAN</text>
+  <text x="48" y="372" font-size="11" fill="#42505e">Auth: X.509 cert, IAM, Cognito &middot; semua trafik TLS</text>
+</svg>

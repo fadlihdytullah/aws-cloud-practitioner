@@ -1,0 +1,39 @@
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="arrow-aid-06" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect x="22" y="22" width="716" height="276" rx="18" fill="#f8fafc" stroke="#d8e2ee" stroke-width="2" />
+  <text x="380" y="52" text-anchor="middle" font-size="18" fill="#232f3e" font-weight="700">Alur Cognito: user pool lalu identity pool</text>
+
+  <rect x="44" y="116" width="128" height="86" rx="14" fill="#334155" />
+  <text x="108" y="152" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Pengguna app</text>
+  <text x="108" y="174" text-anchor="middle" font-size="11" fill="#e2e8f0">web atau mobile</text>
+
+  <rect x="232" y="100" width="168" height="118" rx="14" fill="#0f766e" />
+  <text x="316" y="132" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">User Pool</text>
+  <text x="316" y="156" text-anchor="middle" font-size="11" fill="#ccfbf1">authenticate (login)</text>
+  <text x="316" y="176" text-anchor="middle" font-size="11" fill="#ccfbf1">direktori pengguna</text>
+  <text x="316" y="196" text-anchor="middle" font-size="11" fill="#ccfbf1">keluaran: token JWT</text>
+
+  <rect x="448" y="100" width="168" height="118" rx="14" fill="#0d9488" />
+  <text x="532" y="132" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">Identity Pool</text>
+  <text x="532" y="156" text-anchor="middle" font-size="11" fill="#ccfbf1">tukar token &rarr; role</text>
+  <text x="532" y="176" text-anchor="middle" font-size="11" fill="#ccfbf1">keluaran: AWS creds</text>
+  <text x="532" y="196" text-anchor="middle" font-size="11" fill="#ccfbf1">sementara &amp; terbatas</text>
+
+  <rect x="648" y="116" width="74" height="86" rx="14" fill="#1d4ed8" />
+  <text x="685" y="148" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">AWS</text>
+  <text x="685" y="166" text-anchor="middle" font-size="10" fill="#dbeafe">S3 /</text>
+  <text x="685" y="182" text-anchor="middle" font-size="10" fill="#dbeafe">DynamoDB</text>
+
+  <line x1="172" y1="159" x2="226" y2="159" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-aid-06)" />
+  <text x="199" y="146" text-anchor="middle" font-size="10" fill="#42505e">login</text>
+  <line x1="400" y1="159" x2="442" y2="159" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-aid-06)" />
+  <text x="421" y="146" text-anchor="middle" font-size="10" fill="#42505e">JWT</text>
+  <line x1="616" y1="159" x2="642" y2="159" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-aid-06)" />
+
+  <text x="380" y="252" text-anchor="middle" font-size="12" fill="#42505e">User pool menjawab "boleh masuk aplikasi?". Identity pool menjawab "boleh sentuh AWS resource yang mana?".</text>
+  <text x="380" y="276" text-anchor="middle" font-size="11" fill="#94a3b8">Banyak aplikasi cukup memakai user pool saja; identity pool dipakai bila app perlu memanggil AWS langsung.</text>
+</svg>

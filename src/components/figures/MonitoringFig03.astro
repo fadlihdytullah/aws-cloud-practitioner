@@ -1,0 +1,44 @@
+<svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <text x="380" y="32" text-anchor="middle" font-size="18" fill="#232f3e" font-weight="700">Kasus sama, tiga sudut pandang: bucket S3 jadi public</text>
+  <rect x="34" y="52" width="692" height="50" rx="12" fill="#fff7ed" stroke="#ec7211" stroke-width="2" />
+  <text x="380" y="74" text-anchor="middle" font-size="13" fill="#9a3412" font-weight="700">Kejadian: PutBucketPolicy mengubah bucket gambar produk menjadi dapat diakses publik</text>
+  <text x="380" y="92" text-anchor="middle" font-size="11" fill="#42505e">Satu kejadian operasional, dilihat berbeda oleh tiga layanan</text>
+
+  <rect x="34" y="128" width="220" height="232" rx="16" fill="#e8f1ff" stroke="#2563eb" stroke-width="2" />
+  <text x="144" y="158" text-anchor="middle" font-size="15" fill="#1e3a8a" font-weight="700">CloudWatch</text>
+  <text x="144" y="178" text-anchor="middle" font-size="11" fill="#42505e">APA yang terjadi</text>
+  <line x1="58" y1="192" x2="230" y2="192" stroke="#bcd4f6" stroke-width="1.5" />
+  <text x="144" y="216" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Lonjakan traffic</text>
+  <text x="144" y="238" text-anchor="middle" font-size="11" fill="#42505e">request count naik,</text>
+  <text x="144" y="255" text-anchor="middle" font-size="11" fill="#42505e">data transfer keluar</text>
+  <text x="144" y="277" text-anchor="middle" font-size="11" fill="#42505e">melonjak, alarm</text>
+  <text x="144" y="294" text-anchor="middle" font-size="11" fill="#42505e">bisa menyala</text>
+  <rect x="58" y="314" width="172" height="34" rx="9" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" />
+  <text x="144" y="336" text-anchor="middle" font-size="11" fill="#1e3a8a" font-weight="700">metrik &amp; alarm</text>
+
+  <rect x="270" y="128" width="220" height="232" rx="16" fill="#effaf6" stroke="#0f766e" stroke-width="2" />
+  <text x="380" y="158" text-anchor="middle" font-size="15" fill="#0f766e" font-weight="700">CloudTrail</text>
+  <text x="380" y="178" text-anchor="middle" font-size="11" fill="#42505e">SIAPA melakukan</text>
+  <line x1="294" y1="192" x2="466" y2="192" stroke="#bfe3d8" stroke-width="1.5" />
+  <text x="380" y="216" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Event PutBucketPolicy</text>
+  <text x="380" y="238" text-anchor="middle" font-size="11" fill="#42505e">userIdentity: role X,</text>
+  <text x="380" y="255" text-anchor="middle" font-size="11" fill="#42505e">eventTime, source IP,</text>
+  <text x="380" y="277" text-anchor="middle" font-size="11" fill="#42505e">resource target.</text>
+  <text x="380" y="294" text-anchor="middle" font-size="11" fill="#42505e">Jejak siapa &amp; kapan</text>
+  <rect x="294" y="314" width="172" height="34" rx="9" fill="#ffffff" stroke="#0f766e" stroke-width="1.5" />
+  <text x="380" y="336" text-anchor="middle" font-size="11" fill="#0f766e" font-weight="700">audit who-did-what</text>
+
+  <rect x="506" y="128" width="220" height="232" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2" />
+  <text x="616" y="158" text-anchor="middle" font-size="15" fill="#5b21b6" font-weight="700">AWS Config</text>
+  <text x="616" y="178" text-anchor="middle" font-size="11" fill="#42505e">SESUAI aturan</text>
+  <line x1="530" y1="192" x2="702" y2="192" stroke="#ddd6fe" stroke-width="1.5" />
+  <text x="616" y="216" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Rule menandai bucket</text>
+  <text x="616" y="238" text-anchor="middle" font-size="11" fill="#42505e">s3-bucket-public-</text>
+  <text x="616" y="255" text-anchor="middle" font-size="11" fill="#42505e">read-prohibited</text>
+  <text x="616" y="277" text-anchor="middle" font-size="11" fill="#42505e">berstatus</text>
+  <text x="616" y="294" text-anchor="middle" font-size="12" fill="#b91c1c" font-weight="700">NONCOMPLIANT</text>
+  <rect x="530" y="314" width="172" height="34" rx="9" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5" />
+  <text x="616" y="336" text-anchor="middle" font-size="11" fill="#5b21b6" font-weight="700">compliance + history</text>
+
+  <text x="380" y="384" text-anchor="middle" font-size="12" fill="#42505e">Soal sering memakai satu kasus, tetapi jawabannya berbeda tergantung kata kerja: terjadi, melakukan, atau sesuai aturan.</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="arrow-aid-02" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect x="22" y="24" width="716" height="312" rx="18" fill="#f8fafc" stroke="#d8e2ee" stroke-width="2" />
+  <text x="380" y="56" text-anchor="middle" font-size="18" fill="#232f3e" font-weight="700">Alur Cross-Account AssumeRole</text>
+  <rect x="54" y="92" width="158" height="120" rx="14" fill="#232f3e" />
+  <text x="133" y="124" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">Account A</text>
+  <text x="133" y="148" text-anchor="middle" font-size="12" fill="#dbeafe">principal sumber</text>
+  <text x="133" y="170" text-anchor="middle" font-size="11" fill="#dbeafe">user, role, pipeline</text>
+  <text x="133" y="192" text-anchor="middle" font-size="11" fill="#dbeafe">izin sts:AssumeRole</text>
+  <rect x="302" y="104" width="156" height="96" rx="14" fill="#ec7211" />
+  <text x="380" y="136" text-anchor="middle" font-size="15" fill="#ffffff" font-weight="700">AWS STS</text>
+  <text x="380" y="160" text-anchor="middle" font-size="12" fill="#fff7ed">menerbitkan</text>
+  <text x="380" y="182" text-anchor="middle" font-size="12" fill="#fff7ed">temporary credentials</text>
+  <rect x="548" y="92" width="158" height="120" rx="14" fill="#1d4ed8" />
+  <text x="627" y="124" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">Account B</text>
+  <text x="627" y="148" text-anchor="middle" font-size="12" fill="#dbeafe">target role</text>
+  <text x="627" y="170" text-anchor="middle" font-size="11" fill="#dbeafe">trust policy</text>
+  <text x="627" y="192" text-anchor="middle" font-size="11" fill="#dbeafe">permission policy</text>
+  <line x1="212" y1="152" x2="296" y2="152" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-aid-02)" />
+  <text x="254" y="136" text-anchor="middle" font-size="11" fill="#42505e">AssumeRole</text>
+  <line x1="458" y1="152" x2="542" y2="152" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-aid-02)" />
+  <text x="500" y="136" text-anchor="middle" font-size="11" fill="#42505e">role session</text>
+  <path d="M380 200 C380 252 170 252 133 216" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-aid-02)" />
+  <text x="272" y="266" text-anchor="middle" font-size="11" fill="#0f766e">credentials kembali ke pemanggil</text>
+  <rect x="550" y="248" width="156" height="54" rx="12" fill="#0f172a" />
+  <text x="628" y="272" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Target Resource</text>
+  <text x="628" y="292" text-anchor="middle" font-size="11" fill="#e2e8f0">S3, DynamoDB, dan lain-lain</text>
+  <path d="M627 212 L627 242" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-aid-02)" />
+  <text x="380" y="322" text-anchor="middle" font-size="12" fill="#42505e">Akses berhasil hanya jika trust policy, permission policy, dan guardrail organisasi sama-sama mengizinkan.</text>
+</svg>

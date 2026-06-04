@@ -1,0 +1,38 @@
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <text x="30" y="30" text-anchor="start" font-size="15" fill="#232f3e" font-weight="700">Shared Responsibility: garis tanggung jawab bergeser, tetapi tak pernah hilang</text>
+
+  <rect x="30" y="48" width="340" height="40" rx="8" fill="#fff7ed" stroke="#ec7211" stroke-width="2"/>
+  <text x="200" y="73" text-anchor="middle" font-size="13" fill="#ec7211" font-weight="700">Customer: security IN the cloud</text>
+  <rect x="390" y="48" width="340" height="40" rx="8" fill="#eef6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="560" y="73" text-anchor="middle" font-size="13" fill="#2563eb" font-weight="700">AWS: security OF the cloud</text>
+
+  <text x="30" y="118" text-anchor="start" font-size="12" fill="#42505e" font-weight="700">Makin ke kanan (serverless), makin banyak yang ditangani AWS. Tapi 3 hal ini selalu milik customer:</text>
+
+  <rect x="30" y="132" width="350" height="120" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="48" y="156" text-anchor="start" font-size="12" fill="#d97706" font-weight="700">Selalu tanggung jawab customer</text>
+  <text x="48" y="180" text-anchor="start" font-size="11" fill="#232f3e">1. Data (klasifikasi, enkripsi, backup)</text>
+  <text x="48" y="202" text-anchor="start" font-size="11" fill="#232f3e">2. Akses &amp; identitas (IAM, MFA, least privilege)</text>
+  <text x="48" y="224" text-anchor="start" font-size="11" fill="#232f3e">3. Konfigurasi (bucket policy, security group)</text>
+  <text x="48" y="244" text-anchor="start" font-size="10" fill="#64748b">Managed service tidak memindahkan ketiganya ke AWS.</text>
+
+  <rect x="400" y="132" width="330" height="120" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="418" y="156" text-anchor="start" font-size="12" fill="#2563eb" font-weight="700">Selalu tanggung jawab AWS</text>
+  <text x="418" y="180" text-anchor="start" font-size="11" fill="#232f3e">&bull; Data center fisik, listrik, jaringan inti</text>
+  <text x="418" y="202" text-anchor="start" font-size="11" fill="#232f3e">&bull; Hardware host dan hypervisor</text>
+  <text x="418" y="224" text-anchor="start" font-size="11" fill="#232f3e">&bull; Patching platform pada managed service</text>
+  <text x="418" y="244" text-anchor="start" font-size="10" fill="#64748b">Customer tetap tak bisa mengaksesnya langsung.</text>
+
+  <text x="30" y="288" text-anchor="start" font-size="12" fill="#42505e" font-weight="700">Slider: porsi customer mengecil dari kiri ke kanan</text>
+
+  <rect x="30" y="300" width="700" height="34" rx="8" fill="#eef2f7"/>
+  <rect x="30" y="300" width="490" height="34" rx="8" fill="#ec7211"/>
+  <text x="150" y="322" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">IaaS (EC2): customer urus OS, patch, app</text>
+  <text x="635" y="322" text-anchor="middle" font-size="11" fill="#232f3e" font-weight="700">AWS</text>
+
+  <line x1="30" y1="346" x2="30" y2="356" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="30" y="370" text-anchor="start" font-size="10" fill="#64748b">IaaS: EC2</text>
+  <line x1="380" y1="346" x2="380" y2="356" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="380" y="370" text-anchor="middle" font-size="10" fill="#64748b">Managed: RDS</text>
+  <line x1="730" y1="346" x2="730" y2="356" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="730" y="370" text-anchor="end" font-size="10" fill="#64748b">Serverless: Lambda, S3, DynamoDB</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="arrow-aid-04" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+  <rect x="22" y="22" width="716" height="426" rx="18" fill="#f8fafc" stroke="#d8e2ee" stroke-width="2" />
+  <text x="380" y="50" text-anchor="middle" font-size="18" fill="#232f3e" font-weight="700">Landing zone multi-account (Organizations + Control Tower)</text>
+
+  <rect x="262" y="68" width="236" height="60" rx="12" fill="#232f3e" />
+  <text x="380" y="92" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">Management account</text>
+  <text x="380" y="112" text-anchor="middle" font-size="11" fill="#dbeafe">consolidated billing &middot; root organisasi</text>
+
+  <line x1="380" y1="128" x2="380" y2="150" stroke="#94a3b8" stroke-width="2" />
+  <line x1="130" y1="150" x2="630" y2="150" stroke="#94a3b8" stroke-width="2" />
+  <line x1="130" y1="150" x2="130" y2="170" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow-aid-04)" />
+  <line x1="380" y1="150" x2="380" y2="170" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow-aid-04)" />
+  <line x1="630" y1="150" x2="630" y2="170" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow-aid-04)" />
+
+  <rect x="46" y="174" width="168" height="158" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1.5" />
+  <text x="130" y="196" text-anchor="middle" font-size="13" fill="#3730a3" font-weight="700">Security OU</text>
+  <rect x="62" y="208" width="136" height="48" rx="8" fill="#1d4ed8" />
+  <text x="130" y="228" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Log Archive</text>
+  <text x="130" y="245" text-anchor="middle" font-size="10" fill="#dbeafe">log terpusat</text>
+  <rect x="62" y="266" width="136" height="48" rx="8" fill="#1d4ed8" />
+  <text x="130" y="286" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Audit</text>
+  <text x="130" y="303" text-anchor="middle" font-size="10" fill="#dbeafe">akses lintas akun</text>
+
+  <rect x="296" y="174" width="168" height="158" rx="12" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+  <text x="380" y="196" text-anchor="middle" font-size="13" fill="#065f46" font-weight="700">Workloads OU</text>
+  <rect x="312" y="208" width="136" height="34" rx="8" fill="#0f766e" />
+  <text x="380" y="230" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Dev</text>
+  <rect x="312" y="250" width="136" height="34" rx="8" fill="#0f766e" />
+  <text x="380" y="272" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Test</text>
+  <rect x="312" y="292" width="136" height="34" rx="8" fill="#0f766e" />
+  <text x="380" y="314" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Prod</text>
+
+  <rect x="546" y="174" width="168" height="158" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5" />
+  <text x="630" y="196" text-anchor="middle" font-size="13" fill="#9a3412" font-weight="700">Sandbox OU</text>
+  <rect x="562" y="208" width="136" height="48" rx="8" fill="#ec7211" />
+  <text x="630" y="228" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Eksperimen</text>
+  <text x="630" y="245" text-anchor="middle" font-size="10" fill="#fff7ed">akun coba-coba</text>
+  <rect x="562" y="266" width="136" height="48" rx="8" fill="#ec7211" />
+  <text x="630" y="286" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">Training</text>
+  <text x="630" y="303" text-anchor="middle" font-size="10" fill="#fff7ed">lab terisolasi</text>
+
+  <rect x="46" y="350" width="668" height="80" rx="12" fill="#ffffff" stroke="#d8e2ee" stroke-width="1.5" />
+  <text x="380" y="372" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Lapisan yang menempel di seluruh organisasi</text>
+  <rect x="60" y="384" width="206" height="34" rx="8" fill="#7c3aed" />
+  <text x="163" y="406" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">SCP / RCP &rarr; guardrail per OU</text>
+  <rect x="278" y="384" width="206" height="34" rx="8" fill="#ec7211" />
+  <text x="381" y="406" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">IAM Identity Center &rarr; akses</text>
+  <rect x="496" y="384" width="206" height="34" rx="8" fill="#0f766e" />
+  <text x="599" y="406" text-anchor="middle" font-size="11" fill="#ffffff" font-weight="700">AWS RAM &rarr; share resource</text>
+</svg>

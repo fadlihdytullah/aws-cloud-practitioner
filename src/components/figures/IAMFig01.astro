@@ -1,0 +1,50 @@
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect x="24" y="28" width="712" height="364" rx="22" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+  <text x="380" y="62" text-anchor="middle" font-size="20" fill="#232f3e" font-weight="700">Alur identitas, izin, dan akses di AWS IAM</text>
+  <g>
+    <rect x="56" y="104" width="156" height="82" rx="14" fill="#232f3e" />
+    <text x="134" y="136" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">Principal</text>
+    <text x="134" y="160" text-anchor="middle" font-size="12" fill="#dbeafe">User, Role, atau App</text>
+  </g>
+  <g>
+    <rect x="302" y="104" width="156" height="82" rx="14" fill="#fff7ed" stroke="#ec7211" stroke-width="2" />
+    <text x="380" y="136" text-anchor="middle" font-size="14" fill="#232f3e" font-weight="700">Policy</text>
+    <text x="380" y="160" text-anchor="middle" font-size="12" fill="#42505e">Allow atau Deny</text>
+  </g>
+  <g>
+    <rect x="548" y="104" width="156" height="82" rx="14" fill="#ecfdf5" stroke="#059669" stroke-width="2" />
+    <text x="626" y="136" text-anchor="middle" font-size="14" fill="#232f3e" font-weight="700">Resource</text>
+    <text x="626" y="160" text-anchor="middle" font-size="12" fill="#42505e">S3, EC2, DynamoDB</text>
+  </g>
+  <line x1="212" y1="145" x2="302" y2="145" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)" />
+  <line x1="458" y1="145" x2="548" y2="145" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)" />
+  <text x="257" y="132" text-anchor="middle" font-size="12" fill="#42505e">request</text>
+  <text x="503" y="132" text-anchor="middle" font-size="12" fill="#42505e">evaluasi</text>
+  <g>
+    <rect x="76" y="250" width="174" height="92" rx="14" fill="#eef2ff" stroke="#6366f1" stroke-width="2" />
+    <text x="163" y="280" text-anchor="middle" font-size="14" fill="#232f3e" font-weight="700">Role</text>
+    <text x="163" y="304" text-anchor="middle" font-size="12" fill="#42505e">Dipakai layanan AWS</text>
+    <text x="163" y="326" text-anchor="middle" font-size="12" fill="#42505e">atau federated user</text>
+  </g>
+  <g>
+    <rect x="293" y="250" width="174" height="92" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
+    <text x="380" y="280" text-anchor="middle" font-size="14" fill="#232f3e" font-weight="700">STS</text>
+    <text x="380" y="304" text-anchor="middle" font-size="12" fill="#42505e">Kredensial sementara</text>
+    <text x="380" y="326" text-anchor="middle" font-size="12" fill="#42505e">berumur terbatas</text>
+  </g>
+  <g>
+    <rect x="510" y="250" width="174" height="92" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" />
+    <text x="597" y="280" text-anchor="middle" font-size="14" fill="#232f3e" font-weight="700">Akses aman</text>
+    <text x="597" y="304" text-anchor="middle" font-size="12" fill="#42505e">Tanpa access key</text>
+    <text x="597" y="326" text-anchor="middle" font-size="12" fill="#42505e">jangka panjang</text>
+  </g>
+  <line x1="250" y1="296" x2="293" y2="296" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)" />
+  <line x1="467" y1="296" x2="510" y2="296" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)" />
+  <path d="M 163 250 C 170 218, 250 208, 302 184" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+  <path d="M 597 250 C 590 218, 520 208, 458 184" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+</svg>

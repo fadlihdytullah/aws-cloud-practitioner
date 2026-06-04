@@ -1,0 +1,58 @@
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+  <rect x="20" y="20" width="720" height="420" rx="18" fill="#f8fafc" stroke="#d8dee9" stroke-width="2" />
+  <text x="380" y="54" text-anchor="middle" font-size="21" fill="#232f3e" font-weight="700">Pohon Keputusan Memilih Database AWS</text>
+
+  <rect x="280" y="74" width="200" height="48" rx="12" fill="#232f3e" />
+  <text x="380" y="98" text-anchor="middle" font-size="13" fill="#ff9d4d" font-weight="700">Bentuk data apa?</text>
+  <text x="380" y="114" text-anchor="middle" font-size="11" fill="#ffffff">Mulai dari pola akses</text>
+
+  <line x1="380" y1="122" x2="115" y2="158" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+  <line x1="380" y1="122" x2="290" y2="158" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+  <line x1="380" y1="122" x2="470" y2="158" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+  <line x1="380" y1="122" x2="645" y2="158" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+
+  <rect x="40" y="160" width="160" height="58" rx="10" fill="#eef6ff" stroke="#2563eb" stroke-width="2" />
+  <text x="120" y="183" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Tabel &amp; transaksi</text>
+  <text x="120" y="202" text-anchor="middle" font-size="11" fill="#42505e">SQL, relasi, konsisten</text>
+
+  <rect x="220" y="160" width="140" height="58" rx="10" fill="#ecfeff" stroke="#0891b2" stroke-width="2" />
+  <text x="290" y="183" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Key-value besar</text>
+  <text x="290" y="202" text-anchor="middle" font-size="11" fill="#42505e">Lookup per key cepat</text>
+
+  <rect x="400" y="160" width="140" height="58" rx="10" fill="#fff7ed" stroke="#ec7211" stroke-width="2" />
+  <text x="470" y="183" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Bentuk khusus</text>
+  <text x="470" y="202" text-anchor="middle" font-size="11" fill="#42505e">Dokumen, graph, waktu</text>
+
+  <rect x="560" y="160" width="160" height="58" rx="10" fill="#fff1f2" stroke="#e11d48" stroke-width="2" />
+  <text x="640" y="183" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">Analitik besar</text>
+  <text x="640" y="202" text-anchor="middle" font-size="11" fill="#42505e">Agregasi &amp; laporan</text>
+
+  <line x1="120" y1="218" x2="120" y2="252" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+  <line x1="290" y1="218" x2="290" y2="252" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+  <line x1="470" y1="218" x2="470" y2="252" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+  <line x1="640" y1="218" x2="640" y2="252" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)" />
+
+  <rect x="44" y="254" width="152" height="46" rx="9" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" />
+  <text x="120" y="282" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">RDS &amp; Aurora</text>
+
+  <rect x="218" y="254" width="144" height="46" rx="9" fill="#ffffff" stroke="#0891b2" stroke-width="1.5" />
+  <text x="290" y="282" text-anchor="middle" font-size="12" fill="#232f3e" font-weight="700">DynamoDB</text>
+
+  <rect x="400" y="254" width="140" height="46" rx="9" fill="#ffffff" stroke="#ec7211" stroke-width="1.5" />
+  <text x="470" y="276" text-anchor="middle" font-size="11" fill="#232f3e" font-weight="700">DocumentDB &middot; Neptune</text>
+  <text x="470" y="292" text-anchor="middle" font-size="11" fill="#232f3e" font-weight="700">Timestream &middot; Keyspaces</text>
+
+  <rect x="564" y="254" width="152" height="46" rx="9" fill="#ffffff" stroke="#e11d48" stroke-width="1.5" />
+  <text x="640" y="276" text-anchor="middle" font-size="11" fill="#232f3e" font-weight="700">Redshift &middot; Athena</text>
+  <text x="640" y="292" text-anchor="middle" font-size="11" fill="#232f3e" font-weight="700">EMR &middot; OpenSearch</text>
+
+  <rect x="50" y="324" width="660" height="92" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2" />
+  <text x="380" y="350" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">Butuh lebih cepat lagi atau global?</text>
+  <text x="380" y="374" text-anchor="middle" font-size="12" fill="#42505e">ElastiCache untuk cache milidetik di depan database utama.</text>
+  <text x="380" y="394" text-anchor="middle" font-size="12" fill="#42505e">Aurora Global Database atau DynamoDB Global Tables untuk lintas Region.</text>
+</svg>

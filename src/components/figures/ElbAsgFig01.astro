@@ -1,0 +1,36 @@
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" font-family="Sora, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect x="24" y="28" width="712" height="364" rx="22" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+  <text x="380" y="62" text-anchor="middle" font-size="18" fill="#232f3e" font-weight="700">Pola ALB + Auto Scaling Group Multi-AZ</text>
+  <rect x="54" y="150" width="126" height="66" rx="14" fill="#232f3e" />
+  <text x="117" y="178" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Users</text>
+  <text x="117" y="198" text-anchor="middle" font-size="12" fill="#ffbf80">Browser / API client</text>
+  <path d="M 180 183 L 272 183" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+  <rect x="282" y="128" width="166" height="110" rx="16" fill="#ec7211" />
+  <text x="365" y="162" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">Application Load Balancer</text>
+  <text x="365" y="185" text-anchor="middle" font-size="12" fill="#fff7ed">Listener + Rules</text>
+  <text x="365" y="206" text-anchor="middle" font-size="12" fill="#fff7ed">Health-based routing</text>
+  <path d="M 448 170 L 518 122" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+  <path d="M 448 196 L 518 250" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+  <rect x="520" y="92" width="168" height="106" rx="16" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+  <text x="604" y="116" text-anchor="middle" font-size="13" fill="#075985" font-weight="700">Availability Zone A</text>
+  <rect x="548" y="134" width="112" height="42" rx="10" fill="#ffffff" stroke="#38bdf8" stroke-width="2" />
+  <text x="604" y="159" text-anchor="middle" font-size="12" fill="#0f172a">EC2 sehat</text>
+  <rect x="520" y="222" width="168" height="106" rx="16" fill="#ecfdf5" stroke="#059669" stroke-width="2" />
+  <text x="604" y="246" text-anchor="middle" font-size="13" fill="#065f46" font-weight="700">Availability Zone B</text>
+  <rect x="548" y="264" width="112" height="42" rx="10" fill="#ffffff" stroke="#34d399" stroke-width="2" />
+  <text x="604" y="289" text-anchor="middle" font-size="12" fill="#0f172a">EC2 sehat</text>
+  <rect x="238" y="292" width="254" height="56" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2" />
+  <text x="365" y="316" text-anchor="middle" font-size="13" fill="#3730a3" font-weight="700">Auto Scaling Group</text>
+  <text x="365" y="335" text-anchor="middle" font-size="12" fill="#42505e">Min, Desired, Max + Launch Template</text>
+  <path d="M 492 320 L 548 290" stroke="#4f46e5" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+  <path d="M 492 304 L 548 158" stroke="#4f46e5" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+  <rect x="72" y="290" width="120" height="58" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="2" />
+  <text x="132" y="315" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">CloudWatch</text>
+  <text x="132" y="334" text-anchor="middle" font-size="12" fill="#42505e">Metric + alarm</text>
+  <path d="M 192 319 L 238 319" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+</svg>

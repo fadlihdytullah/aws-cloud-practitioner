@@ -1,0 +1,47 @@
+<svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif">
+  <defs>
+    <marker id="iamf3arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#42505e" />
+    </marker>
+  </defs>
+  <rect x="24" y="24" width="712" height="382" rx="22" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+  <text x="380" y="58" text-anchor="middle" font-size="20" fill="#232f3e" font-weight="700">Alur Evaluasi Izin: default deny, kecuali ada allow tanpa deny</text>
+  <g>
+    <rect x="300" y="84" width="160" height="48" rx="12" fill="#232f3e" />
+    <text x="380" y="113" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">Request masuk</text>
+  </g>
+  <g>
+    <rect x="280" y="160" width="200" height="56" rx="12" fill="#fff7ed" stroke="#ec7211" stroke-width="2" />
+    <text x="380" y="184" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">Ada explicit DENY?</text>
+    <text x="380" y="204" text-anchor="middle" font-size="11" fill="#42505e">di policy mana pun</text>
+  </g>
+  <g>
+    <rect x="280" y="244" width="200" height="56" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2" />
+    <text x="380" y="268" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">Ada ALLOW yang cocok?</text>
+    <text x="380" y="288" text-anchor="middle" font-size="11" fill="#42505e">minimal satu policy</text>
+  </g>
+  <g>
+    <rect x="544" y="160" width="166" height="56" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2" />
+    <text x="627" y="184" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">DITOLAK</text>
+    <text x="627" y="204" text-anchor="middle" font-size="11" fill="#42505e">deny menang mutlak</text>
+  </g>
+  <g>
+    <rect x="544" y="244" width="166" height="56" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2" />
+    <text x="627" y="268" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">DITOLAK</text>
+    <text x="627" y="288" text-anchor="middle" font-size="11" fill="#42505e">implicit deny default</text>
+  </g>
+  <g>
+    <rect x="280" y="330" width="200" height="56" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="2" />
+    <text x="380" y="354" text-anchor="middle" font-size="13" fill="#232f3e" font-weight="700">DIIZINKAN</text>
+    <text x="380" y="374" text-anchor="middle" font-size="11" fill="#42505e">allow tanpa deny</text>
+  </g>
+  <line x1="380" y1="132" x2="380" y2="160" stroke="#42505e" stroke-width="2.5" marker-end="url(#iamf3arrow)" />
+  <line x1="480" y1="188" x2="544" y2="188" stroke="#dc2626" stroke-width="2.5" marker-end="url(#iamf3arrow)" />
+  <text x="512" y="178" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">ya</text>
+  <line x1="380" y1="216" x2="380" y2="244" stroke="#42505e" stroke-width="2.5" marker-end="url(#iamf3arrow)" />
+  <text x="398" y="236" text-anchor="start" font-size="11" fill="#42505e" font-weight="700">tidak</text>
+  <line x1="480" y1="272" x2="544" y2="272" stroke="#dc2626" stroke-width="2.5" marker-end="url(#iamf3arrow)" />
+  <text x="512" y="262" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">tidak</text>
+  <line x1="380" y1="300" x2="380" y2="330" stroke="#059669" stroke-width="2.5" marker-end="url(#iamf3arrow)" />
+  <text x="398" y="320" text-anchor="start" font-size="11" fill="#059669" font-weight="700">ya</text>
+</svg>

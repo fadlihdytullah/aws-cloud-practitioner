@@ -1616,6 +1616,7 @@ nav.toc a .num { color: var(--ink-soft); }
   list-style: none;
   margin: 0;
   padding: 0;
+  max-width: none;
   border-top: 1px solid var(--line);
 }
 .curr-item {
@@ -1644,6 +1645,7 @@ nav.toc a .num { color: var(--ink-soft); }
 .curr-index {
   grid-area: idx;
   align-self: center;
+  justify-self: center;
   display: inline-flex;
   align-items: center;
   justify-content: center;

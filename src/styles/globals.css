@@ -48,15 +48,15 @@
   --ink-muted: #586577;
   --line: #e2e8f0;
   --line-strong: #cbd5e1;
-  /* primary accent — blue, Laravel Cloud palette */
-  --blue: #2563eb;
-  --blue-bright: #3b82f6;
-  --blue-soft: #eff6ff;
-  --blue-mid: #bfdbfe;
+  /* primary accent — AWS orange brand */
+  --blue: #ff9900;
+  --blue-bright: #ffb84d;
+  --blue-soft: #fff4e5;
+  --blue-mid: #fed7aa;
   /* alias orange → blue so all components pick up the new accent */
-  --orange: #2563eb;
-  --orange-bright: #3b82f6;
-  --orange-soft: #eff6ff;
+  --orange: #ff9900;
+  --orange-bright: #ffb84d;
+  --orange-soft: #fff4e5;
   /* structural */
   --navy: #0f172a;
   --navy-soft: #1e293b;
@@ -352,7 +352,7 @@ header.hero {
   height: 7px;
   border-radius: 999px;
   background: var(--blue);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, .16);
+  box-shadow: 0 0 0 4px rgba(255, 153, 0, .16);
 }
 
 .hero h1,
@@ -449,7 +449,7 @@ section:last-child {
   height: 38px;
   display: inline-grid;
   place-items: center;
-  border: 1px solid rgba(37, 99, 235, .2);
+  border: 1px solid rgba(255, 153, 0, .2);
   border-radius: 10px;
   background: var(--blue-soft);
   color: var(--blue);
@@ -521,7 +521,7 @@ em.term {
 a.inline {
   color: var(--blue);
   text-decoration: underline;
-  text-decoration-color: rgba(37, 99, 235, .35);
+  text-decoration-color: rgba(255, 153, 0, .35);
   text-underline-offset: 3px;
 }
 
@@ -619,7 +619,7 @@ ul.clean li::before {
 
 .tip {
   background: linear-gradient(180deg, var(--blue-soft), #fff);
-  border-color: rgba(37, 99, 235, .18);
+  border-color: rgba(255, 153, 0, .18);
 }
 
 .tip .box-tag,
@@ -872,9 +872,9 @@ td strong {
   max-width: 800px;
   margin: 20px 0;
   padding: 14px 18px;
-  border: 1px solid rgba(37, 99, 235, .18);
+  border: 1px solid rgba(255, 153, 0, .18);
   border-radius: 8px;
-  background: rgba(37, 99, 235, .04);
+  background: rgba(255, 153, 0, .04);
 }
 
 .dterm {
@@ -916,10 +916,10 @@ pre {
 code,
 code.ic {
   padding: 2px 6px;
-  border: 1px solid rgba(37, 99, 235, .18);
+  border: 1px solid rgba(255, 153, 0, .18);
   border-radius: 6px;
   background: var(--blue-soft);
-  color: #1d4ed8;
+  color: #d97706;
   font-size: .84em;
 }
 
@@ -1034,7 +1034,7 @@ footer b {
   height: 42px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(37, 99, 235, .25);
+  border: 1px solid rgba(255, 153, 0, .25);
   border-radius: 999px;
   background: rgba(255, 255, 255, .9);
   color: var(--blue);
@@ -1197,9 +1197,9 @@ footer b {
   --ink-muted: #6a5e42;
   --line: #ddd0b3;
   --line-strong: #ccba93;
-  --blue: #1d4ed8;
-  --blue-bright: #2563eb;
-  --blue-soft: rgba(37, 99, 235, .08);
+  --blue: #d97706;
+  --blue-bright: #f59e0b;
+  --blue-soft: rgba(217, 119, 6, .08);
   --shadow: 0 1px 2px rgba(80, 60, 20, .06), 0 8px 24px rgba(80, 60, 20, .08);
   --shadow-lg: 0 16px 64px rgba(80, 60, 20, .14);
 }
@@ -1224,9 +1224,9 @@ footer b {
   --ink-muted: #78716c;
   --line: #292524;
   --line-strong: #44403c;
-  --blue: #60a5fa;
-  --blue-bright: #3b82f6;
-  --blue-soft: rgba(96, 165, 250, .12);
+  --blue: #ff9900;
+  --blue-bright: #ffb84d;
+  --blue-soft: rgba(255, 153, 0, .12);
   --navy: #151515;
   --code-bg: #111111;
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px rgba(0, 0, 0, .5);
@@ -1246,25 +1246,25 @@ footer b {
 [data-theme="dark"] .b-icon { background: rgba(255, 255, 255, .06); }
 
 [data-theme="dark"] .analogy { background: rgba(13, 148, 136, .1); border-color: rgba(13, 148, 136, .3); }
-[data-theme="dark"] .tip { background: rgba(96, 165, 250, .1); border-color: rgba(96, 165, 250, .28); }
+[data-theme="dark"] .tip { background: rgba(255, 153, 0, .1); border-color: rgba(255, 153, 0, .28); }
 [data-theme="dark"] .warn { background: rgba(239, 68, 68, .1); border-color: rgba(239, 68, 68, .3); }
 [data-theme="dark"] .exam { background: rgba(167, 139, 250, .1); border-color: rgba(167, 139, 250, .3); }
 
 [data-theme="dark"] .analogy .box-tag { color: #2dd4bf; }
-[data-theme="dark"] .tip .box-tag { color: #93c5fd; }
+[data-theme="dark"] .tip .box-tag { color: #fbbf24; }
 [data-theme="dark"] .warn .box-tag { color: #fca5a5; }
 [data-theme="dark"] .exam .box-tag { color: #c4b5fd; }
 
 [data-theme="dark"] code,
 [data-theme="dark"] code.ic {
-  background: rgba(96, 165, 250, .14);
-  color: #bfdbfe;
-  border-color: rgba(96, 165, 250, .24);
+  background: rgba(255, 153, 0, .14);
+  color: #fde68a;
+  border-color: rgba(255, 153, 0, .24);
 }
 
 [data-theme="dark"] .def {
-  background: rgba(96, 165, 250, .07);
-  border-color: rgba(96, 165, 250, .2);
+  background: rgba(255, 153, 0, .07);
+  border-color: rgba(255, 153, 0, .2);
 }
 
 /* keep diagrams on a light canvas so the hand-built SVGs stay legible */
@@ -1274,7 +1274,7 @@ footer b {
 
 [data-theme="dark"] #toTop {
   background: rgba(28, 28, 30, .92);
-  border-color: rgba(96, 165, 250, .3);
+  border-color: rgba(255, 153, 0, .3);
   color: var(--blue);
 }
 

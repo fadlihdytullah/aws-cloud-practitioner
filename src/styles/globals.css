@@ -1216,26 +1216,26 @@ footer b {
 /* ── Theme: Dark (reading mode) ─────────────────────────────── */
 
 [data-theme="dark"] {
-  --bg: #0b1120;
-  --paper: #131c2f;
-  --paper-soft: #0f1727;
-  --ink: #e8eef8;
-  --ink-soft: #a3b3c9;
-  --ink-muted: #8294ad;
-  --line: #233044;
-  --line-strong: #33425a;
+  --bg: #151515;
+  --paper: #1c1c1e;
+  --paper-soft: #18181a;
+  --ink: #e7e5e4;
+  --ink-soft: #a8a29e;
+  --ink-muted: #78716c;
+  --line: #292524;
+  --line-strong: #44403c;
   --blue: #60a5fa;
   --blue-bright: #3b82f6;
   --blue-soft: rgba(96, 165, 250, .12);
-  --navy: #0b1120;
-  --code-bg: #0a0f1c;
+  --navy: #151515;
+  --code-bg: #111111;
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px rgba(0, 0, 0, .5);
   --shadow-lg: 0 20px 70px rgba(0, 0, 0, .6);
 }
 
 [data-theme="dark"] body {
   background:
-    radial-gradient(rgba(255, 255, 255, .03) .7px, transparent .7px),
+    radial-gradient(rgba(255, 255, 255, .025) .7px, transparent .7px),
     var(--bg);
   background-size: 22px 22px, auto;
 }
@@ -1268,19 +1268,19 @@ footer b {
 }
 
 /* keep diagrams on a light canvas so the hand-built SVGs stay legible */
-[data-theme="dark"] figure { background: #f1f5f9; border-color: #cbd5e1; }
-[data-theme="dark"] figcaption { color: #475569; }
-[data-theme="dark"] figcaption b { color: #0f172a; }
+[data-theme="dark"] figure { background: #f5f5f4; border-color: #d6d3d1; }
+[data-theme="dark"] figcaption { color: #57534e; }
+[data-theme="dark"] figcaption b { color: #1c1917; }
 
 [data-theme="dark"] #toTop {
-  background: rgba(19, 28, 47, .92);
+  background: rgba(28, 28, 30, .92);
   border-color: rgba(96, 165, 250, .3);
   color: var(--blue);
 }
 
 [data-theme="dark"] #toTop:hover {
   background: var(--blue);
-  color: #0b1120;
+  color: #151515;
 }
 
 @media (prefers-reduced-motion: reduce) {

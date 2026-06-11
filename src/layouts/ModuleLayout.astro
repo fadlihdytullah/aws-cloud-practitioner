@@ -24,6 +24,8 @@ interface Props {
   footerSub: string;
   prev?: PagerLink | null;
   next?: PagerLink | null;
+  moduleIds?: string[];
+  moduleIndex?: number;
 }
 const {
   moduleId,
@@ -37,6 +39,8 @@ const {
   footerSub,
   prev = null,
   next = null,
+  moduleIds = [],
+  moduleIndex = 0,
 } = Astro.props;
 ---
 <BaseLayout
@@ -79,6 +83,41 @@ const {
         </button>
         <p class="module-complete-note" data-complete-note>Progress disimpan lokal di browser ini.</p>
       </div>
+
+      <section
+        class="learning-progress-panel learning-progress-panel-module"
+        data-learning-progress
+        data-module-ids={JSON.stringify(moduleIds)}
+        data-current-module-id={moduleId}
+        data-current-module-index={moduleIndex}
+        aria-label="Progress belajar"
+      >
+        <div class="learning-progress-head">
+          <div>
+            <p class="learning-progress-kicker">Progress belajar</p>
+            <p class="learning-progress-context">Seluruh kursus</p>
+          </div>
+          <p class="learning-progress-stats">
+            <span data-learning-progress-value>0%</span>
+            <span data-learning-progress-count>0/{moduleIds.length} modul selesai</span>
+          </p>
+        </div>
+        <div
+          class="learning-progress-meter"
+          data-learning-progress-meter
+          role="progressbar"
+          aria-label="Progress kursus"
+          aria-valuemin="0"
+          aria-valuemax={moduleIds.length}
+          aria-valuenow="0"
+        >
+          <span class="learning-progress-fill" data-learning-progress-fill></span>
+        </div>
+        <p class="learning-progress-copy" data-learning-progress-copy>
+          Belum ada progres tersimpan.
+        </p>
+      </section>
+
       <slot />
 
       <div class="module-actions module-actions-bottom">

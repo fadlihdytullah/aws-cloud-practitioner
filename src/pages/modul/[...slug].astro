@@ -15,12 +15,14 @@ export async function getStaticPaths() {
         mod,
         prev: toLink(mods[i - 1]),
         next: toLink(mods[i + 1]),
+        moduleIds: mods.map((m) => m.id),
+        moduleIndex: i + 1,
       },
     };
   });
 }
 
-const { mod, prev, next } = Astro.props;
+const { mod, prev, next, moduleIds, moduleIndex } = Astro.props;
 const { Content } = await render(mod);
 const d = mod.data;
 ---
@@ -36,6 +38,8 @@ const d = mod.data;
   footerSub={d.footerSub}
   prev={prev}
   next={next}
+  moduleIds={moduleIds}
+  moduleIndex={moduleIndex}
 >
   <Content />
 </ModuleLayout>
